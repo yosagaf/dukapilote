@@ -12,23 +12,17 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install and Build
-        run: cd stock-app && npm ci && npm run build
+      - name: Install dependencies and build
+        run: |
+          cd stock-app
+          npm ci
+          npm run build
 
-      - name: Deploy to Firebase
+      - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_SHOP_STOCK_MANAGER_8AA62 }}'
           channelId: live
           projectId: dukapilote
-jobs:
-  build_and_deploy:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Install and Build
-        run: cd stock-app && npm ci && npm run build
 
