@@ -15,7 +15,7 @@ jobs:
       - name: Install dependencies and build
         run: |
           cd stock-app
-          npm ci
+          npm install
           npm run build
 
       - name: Deploy to Firebase Hosting
