@@ -39,5 +39,5 @@ jobs:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_SHOP_STOCK_MANAGER_8AA62 }}'
           channelId: live
-          projectId: dukapilote
+          projectId: shop-stock-manager-8aa62
 
