@@ -1,0 +1,223 @@
+import { useState, useEffect } from 'react'
+import { useAuth } from '../contexts/AuthContext'
+import { collection, query, where, orderBy, onSnapshot, addDoc, updateDoc, doc } from 'firebase/firestore'
+import { db } from '../firebase'
+import Sidebar from '../components/Sidebar'
+import Button from '../components/common/Button'
+import LoadingSpinner from '../components/common/LoadingSpinner'
+import QuoteInvoiceCard from '../components/QuoteInvoiceCard'
+
+export default function QuotesInvoices() {
+  const { userProfile, logout } = useAuth()
+  const [currentPage] = useState('quotes-invoices')
+  const [quotes, setQuotes] = useState([])
+  const [invoices, setInvoices] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [showCreateWizard, setShowCreateWizard] = useState(false)
+  const [wizardType, setWizardType] = useState('quote') // 'quote' or 'invoice'
+  const [activeTab, setActiveTab] = useState('quotes') // 'quotes' or 'invoices'
+  const [currentStep, setCurrentStep] = useState(1)
+  const [wizardData, setWizardData] = useState({
+    clientInfo: { name: '', address: '', phone: '', email: '' },
+    selectedItems: [],
+    pricingMode: 'unit',
+    totalAmount: 0,
+    editableDate: new Date().toISOString().split('T')[0]
+  })
+  const [items, setItems] = useState([])
+  const [searchTerm, setSearchTerm] = useState('')
+
+  useEffect(() => {
+    if (userProfile?.uid) {
+      loadData()
+    }
+  }, [userProfile])
+
+  const loadData = async () => {
+    setIsLoading(true)
+    try {
+      // Pour l'instant, initialiser avec des tableaux vides
+      // Les collections seront créées automatiquement lors de la première création
+      setQuotes([])
+      setInvoices([])
+      
+      // TODO: Réactiver les listeners une fois que les collections existent
+      // const quotesQuery = query(
+      //   collection(db, 'quotes'),
+      //   where('userId', '==', userProfile.uid),
+      //   orderBy('created_at', 'desc')
+      // )
+      
+      // const unsubscribeQuotes = onSnapshot(quotesQuery, (snapshot) => {
+      //   const quotesData = snapshot.docs.map(doc => ({
+      //     id: doc.id,
+      //     ...doc.data()
+      //   }))
+      //   setQuotes(quotesData)
+      // })
+
+      // const invoicesQuery = query(
+      //   collection(db, 'invoices'),
+      //   where('userId', '==', userProfile.uid),
+      //   orderBy('created_at', 'desc')
+      // )
+      
+      // const unsubscribeInvoices = onSnapshot(invoicesQuery, (snapshot) => {
+      //   const invoicesData = snapshot.docs.map(doc => ({
+      //     id: doc.id,
+      //     ...doc.data()
+      //   }))
+      //   setInvoices(invoicesData)
+      // })
+
+      // return () => {
+      //   unsubscribeQuotes()
+      //   unsubscribeInvoices()
+      // }
+    } catch (error) {
+      console.error('Erreur lors du chargement des données:', error)
+      setQuotes([])
+      setInvoices([])
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleCreateQuote = () => {
+    setWizardType('quote')
+    setShowCreateWizard(true)
+  }
+
+  const handleCreateInvoice = () => {
+    setWizardType('invoice')
+    setShowCreateWizard(true)
+  }
+
+  const handleCloseWizard = () => {
+    setShowCreateWizard(false)
+  }
+
+  const handleWizardSuccess = () => {
+    setShowCreateWizard(false)
+    // Recharger les données
+    loadData()
+  }
+
+  const currentData = activeTab === 'quotes' ? quotes : invoices
+  const currentType = activeTab === 'quotes' ? 'devis' : 'factures'
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-cyan-50 to-green-50">
+      <div className="flex">
+        <Sidebar currentPage={currentPage} />
+        
+        <main className="px-6 py-6 flex-1">
+          {/* Header */}
+          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-teal-100 p-6 mb-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Devis & Factures</h1>
+                <p className="text-gray-600 mt-1">Gérez vos devis et factures</p>
+              </div>
+              <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
+                <Button
+                  onClick={handleCreateQuote}
+                  variant="primary"
+                  className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
+                >
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Nouveau Devis
+                </Button>
+                <Button
+                  onClick={handleCreateInvoice}
+                  variant="success"
+                  className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800"
+                >
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Nouvelle Facture
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Tabs */}
+          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-teal-100 p-6 mb-6">
+            <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+              <button
+                onClick={() => setActiveTab('quotes')}
+                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                  activeTab === 'quotes'
+                    ? 'bg-white text-blue-600 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                Devis ({quotes.length})
+              </button>
+              <button
+                onClick={() => setActiveTab('invoices')}
+                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                  activeTab === 'invoices'
+                    ? 'bg-white text-green-600 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                Factures ({invoices.length})
+              </button>
+            </div>
+          </div>
+
+          {/* Content */}
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <LoadingSpinner size="lg" />
+            </div>
+          ) : (
+            <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-teal-100 p-6">
+              {currentData.length === 0 ? (
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">Aucun {currentType} trouvé</h3>
+                  <p className="text-gray-600 mb-6">Commencez par créer votre premier {currentType}</p>
+                  <Button
+                    onClick={activeTab === 'quotes' ? handleCreateQuote : handleCreateInvoice}
+                    variant="primary"
+                  >
+                    Créer un {currentType === 'devis' ? 'devis' : 'facture'}
+                  </Button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {currentData.map((item) => (
+                    <QuoteInvoiceCard
+                      key={item.id}
+                      item={item}
+                      type={activeTab}
+                      onUpdate={loadData}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </main>
+      </div>
+
+      {/* Create Modal */}
+      {showCreateWizard && (
+        <QuoteInvoiceWizard
+          type={wizardType}
+          onClose={handleCloseWizard}
+          onSuccess={handleWizardSuccess}
+        />
+      )}
+    </div>
+  )
+}
