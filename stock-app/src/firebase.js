@@ -2,18 +2,22 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
+// Configuration Firebase via variables d'environnement (.env)
 const firebaseConfig = {
-  apiKey: "AIzaSyBr72AwEKrlR9ATBu7-anEYHNNjTWEQo-I",
-  authDomain: "shop-stock-manager-8aa62.firebaseapp.com",
-  projectId: "shop-stock-manager-8aa62",
-  storageBucket: "shop-stock-manager-8aa62.firebasestorage.app",
-  messagingSenderId: "664002180956",
-  appId: "1:664002180956:web:43e717d1cebe2a2ee53399",
-  measurementId: "G-CPDYT4PNV4"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
+// Initialisation de l'app Firebase
 const app = initializeApp(firebaseConfig);
 
+// Exports utiles
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export default app;
+

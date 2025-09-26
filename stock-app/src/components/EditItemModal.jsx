@@ -9,7 +9,7 @@ export default function EditItemModal({ onClose, item }) {
     name: item?.name || '',
     category: item?.category || '',
     quantity: item?.quantity || 0,
-    minThreshold: item?.minThreshold || 5,
+    minThreshold: item?.minThreshold ?? 3,
     price: item?.price || '',
     imageUrl: item?.imageUrl || ''
   })
@@ -187,7 +187,7 @@ export default function EditItemModal({ onClose, item }) {
                   value={formData.minThreshold}
                   onChange={handleChange}
                   className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                  placeholder="5"
+                  placeholder="3"
                 />
               </div>
             </div>

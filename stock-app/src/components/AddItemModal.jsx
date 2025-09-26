@@ -9,7 +9,7 @@ export default function AddItemModal({ onClose, shopId, contextInfo }) {
     name: '',
     category: '',
     quantity: 0,
-    minThreshold: 5,
+    minThreshold: 3,
     price: '',
     imageUrl: ''
   })
@@ -231,7 +231,7 @@ export default function AddItemModal({ onClose, shopId, contextInfo }) {
                   value={formData.minThreshold}
                   onChange={handleChange}
                   className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200"
-                  placeholder="5"
+                  placeholder="3"
                 />
               </div>
             </div>
