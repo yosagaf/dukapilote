@@ -244,37 +244,58 @@ export default function MyDepots() {
             <>
               {/* Selected Depot Information */}
               {selectedDepot && (
-                <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-teal-100 p-6">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-                    <svg className="w-6 h-6 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
-                    </svg>
-                    Informations du Dépôt: {selectedDepot.name}
-                  </h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <h3 className="font-medium text-gray-700 mb-1">Nom</h3>
-                      <p className="text-lg text-gray-900">{selectedDepot.name}</p>
+                <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-teal-100 p-4">
+                  <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Mon dépôt</p>
+                        <h2 className="text-xl font-semibold text-gray-900">{selectedDepot.name}</h2>
+                        <p className="text-sm text-gray-600 flex items-center gap-2">
+                          <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                          {selectedDepot.location || 'Adresse non renseignée'}
+                        </p>
+                      </div>
                     </div>
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <h3 className="font-medium text-gray-700 mb-1">Adresse</h3>
-                      <p className="text-lg text-gray-900">{selectedDepot.location || 'Non renseignée'}</p>
+
+                    <div className="flex flex-wrap gap-3">
+                      <div className="px-3 py-2 rounded-lg bg-blue-50 border border-blue-100">
+                        <p className="text-sm text-blue-500">Articles stockés</p>
+                        <p className="text-base font-semibold text-blue-600">{depotItems.length}</p>
+                      </div>
+                      <div className="px-3 py-2 rounded-lg bg-red-50 border border-red-100">
+                        <p className="text-sm text-red-500">En rupture</p>
+                        <p className="text-base font-semibold text-red-600">{depotItems.filter(item => item.quantity === 0).length}</p>
+                      </div>
+                      <div className="px-3 py-2 rounded-lg bg-orange-50 border border-orange-100">
+                        <p className="text-sm text-orange-500">Stock faible</p>
+                        <p className="text-base font-semibold text-orange-600">{depotItems.filter(item => item.quantity <= item.minThreshold && item.quantity > 0).length}</p>
+                      </div>
+                      <div className="px-3 py-2 rounded-lg bg-purple-50 border border-purple-100">
+                        <p className="text-sm text-purple-500">Magasins liés</p>
+                        <p className="text-base font-semibold text-purple-600">{linkedDepots.length}</p>
+                      </div>
                     </div>
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <h3 className="font-medium text-gray-700 mb-1">Type</h3>
-                      <p className="text-lg text-gray-900">Dépôt</p>
+                  </div>
+
+                  <div className="flex flex-wrap gap-4 mt-4">
+                    <div className="flex-1 min-w-[240px] bg-gray-50 rounded-lg p-4">
+                      <p className="text-sm text-gray-500 mb-1">Description</p>
+                      <p className="text-sm text-gray-700">{selectedDepot.description || 'Aucune description fournie'}</p>
                     </div>
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <h3 className="font-medium text-gray-700 mb-1">Articles</h3>
-                      <p className="text-lg text-gray-900">{depotItems.length} articles</p>
-                    </div>
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <h3 className="font-medium text-gray-700 mb-1">En rupture</h3>
-                      <p className="text-lg text-red-600 font-semibold">{depotItems.filter(item => item.quantity === 0).length}</p>
-                    </div>
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <h3 className="font-medium text-gray-700 mb-1">Stock faible</h3>
-                      <p className="text-lg text-orange-600 font-semibold">{depotItems.filter(item => item.quantity <= item.minThreshold && item.quantity > 0).length}</p>
+                    <div className="flex-1 min-w-[240px] bg-gray-50 rounded-lg p-4">
+                      <p className="text-sm text-gray-500 mb-1">Responsable</p>
+                      <p className="text-sm text-gray-700">{selectedDepot.manager || 'Non défini'}</p>
+                      {selectedDepot.contact && (
+                        <p className="text-xs text-gray-500 mt-1">Contact : {selectedDepot.contact}</p>
+                      )}
                     </div>
                   </div>
                 </div>

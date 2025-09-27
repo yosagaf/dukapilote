@@ -216,37 +216,46 @@ export default function MyShop() {
         <div className="px-6 py-6 space-y-6">
           {/* Shop Information Card */}
           {shopInfo && (
-            <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-teal-100 p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-                <svg className="w-6 h-6 mr-2 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                </svg>
-                Informations du Magasin
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h3 className="font-medium text-gray-700 mb-1">Nom</h3>
-                  <p className="text-lg text-gray-900">{shopInfo.name}</p>
+            <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-teal-100 p-4">
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center text-white">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Mon magasin</p>
+                    <h2 className="text-xl font-semibold text-gray-900">{shopInfo.name}</h2>
+                    {shopInfo.location && (
+                      <p className="text-sm text-gray-600 flex items-center gap-2">
+                        <svg className="w-4 h-4 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        {shopInfo.location}
+                      </p>
+                    )}
+                  </div>
                 </div>
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h3 className="font-medium text-gray-700 mb-1">Adresse</h3>
-                  <p className="text-lg text-gray-900">{shopInfo.location || 'Non renseignée'}</p>
-                </div>
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h3 className="font-medium text-gray-700 mb-1">Articles</h3>
-                  <p className="text-lg text-gray-900">{items.length} articles</p>
-                </div>
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h3 className="font-medium text-gray-700 mb-1">En rupture</h3>
-                  <p className="text-lg text-red-600 font-semibold">{items.filter(item => item.quantity === 0).length}</p>
-                </div>
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h3 className="font-medium text-gray-700 mb-1">Stock faible</h3>
-                  <p className="text-lg text-orange-600 font-semibold">{items.filter(item => item.quantity <= item.minThreshold && item.quantity > 0).length}</p>
-                </div>
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h3 className="font-medium text-gray-700 mb-1">Dépôts liés</h3>
-                  <p className="text-lg text-purple-600 font-semibold">{linkedDepots.length}</p>
+
+                <div className="flex flex-wrap gap-3">
+                  <div className="px-3 py-2 rounded-lg bg-gray-100">
+                    <p className="text-sm text-gray-500">Articles</p>
+                    <p className="text-base font-semibold text-gray-900">{items.length}</p>
+                  </div>
+                  <div className="px-3 py-2 rounded-lg bg-red-50 border border-red-100">
+                    <p className="text-sm text-red-500">En rupture</p>
+                    <p className="text-base font-semibold text-red-600">{items.filter(item => item.quantity === 0).length}</p>
+                  </div>
+                  <div className="px-3 py-2 rounded-lg bg-orange-50 border border-orange-100">
+                    <p className="text-sm text-orange-500">Stock faible</p>
+                    <p className="text-base font-semibold text-orange-600">{items.filter(item => item.quantity <= item.minThreshold && item.quantity > 0).length}</p>
+                  </div>
+                  <div className="px-3 py-2 rounded-lg bg-purple-50 border border-purple-100">
+                    <p className="text-sm text-purple-500">Dépôts liés</p>
+                    <p className="text-base font-semibold text-purple-600">{linkedDepots.length}</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -254,34 +263,46 @@ export default function MyShop() {
 
           {/* Linked Depots Information */}
           {linkedDepots.length > 0 && (
-            <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-teal-100 p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-                <svg className="w-6 h-6 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
-                </svg>
-                Dépôts Liés à Votre Magasin
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-teal-100 p-4">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
+                  </svg>
+                  <h2 className="text-lg font-semibold text-gray-900">Dépôts liés</h2>
+                </div>
+                <span className="text-sm text-gray-500">{linkedDepots.length} dépôt(s)</span>
+              </div>
+
+              <div className="flex flex-wrap gap-4">
                 {linkedDepots.map((depot) => (
                   <div
                     key={depot.id}
-                    className="bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200 rounded-lg p-4 hover:shadow-md transition-all duration-200"
+                    className="flex-1 min-w-[240px] bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200 rounded-lg p-4 hover:shadow-md transition-all duration-200"
                   >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900 mb-1">{depot.name}</h3>
-                        <p className="text-sm text-gray-600 mb-2">{depot.location || 'Adresse non renseignée'}</p>
-                        {depot.description && (
-                          <p className="text-xs text-gray-500 mb-2">{depot.description}</p>
-                        )}
-                        {depot.manager && (
-                          <p className="text-xs text-gray-500">Responsable: {depot.manager}</p>
-                        )}
-                      </div>
-                      <span className="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-purple-200 text-purple-800">
-                        Dépôt
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-semibold text-gray-900">{depot.name}</h3>
+                      <span className="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-white/80 text-gray-700">
+                        {depot.type || 'Dépôt'}
                       </span>
                     </div>
+                    {depot.location && (
+                      <p className="text-sm text-gray-600 flex items-center gap-1 mb-2">
+                        <svg className="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        {depot.location}
+                      </p>
+                    )}
+                    {depot.description && (
+                      <p className="text-xs text-gray-500 mb-2 line-clamp-2">{depot.description}</p>
+                    )}
+                    {depot.manager && (
+                      <p className="text-xs text-gray-500">
+                        Responsable : <span className="font-medium text-gray-700">{depot.manager}</span>
+                      </p>
+                    )}
                   </div>
                 ))}
               </div>
