@@ -9,6 +9,8 @@ import MyDepots from './pages/MyDepots'
 import Sales from './pages/Sales'
 import Reports from './pages/Reports'
 import QuotesInvoices from './pages/QuotesInvoices'
+import Credits from './pages/Credits'
+import CreditDetails from './pages/CreditDetails'
 import AdminDashboard from './pages/AdminDashboard'
 import PrivateRoute from './components/PrivateRoute'
 
@@ -53,6 +55,16 @@ function App() {
             <Route path="/devis-factures" element={
               <PrivateRoute>
                 <QuotesInvoices />
+              </PrivateRoute>
+            } />
+            <Route path="/credits" element={
+              <PrivateRoute>
+                <Credits />
+              </PrivateRoute>
+            } />
+            <Route path="/credits/:creditId" element={
+              <PrivateRoute>
+                <CreditDetails />
               </PrivateRoute>
             } />
             <Route path="/admin" element={

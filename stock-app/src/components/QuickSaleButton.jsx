@@ -58,55 +58,50 @@ export default function QuickSaleButton({ item, onSaleComplete }) {
 
   if (item.quantity <= 0) {
     return (
-      <Button
-        variant="secondary"
-        size="sm"
+      <button
         disabled
-        className="opacity-50"
+        className="bg-gray-100 text-gray-400 px-3 py-1 rounded-md text-xs font-medium cursor-not-allowed"
       >
         Stock épuisé
-      </Button>
+      </button>
     )
   }
 
   if (showConfirm) {
     return (
       <div key="confirm-buttons" className="flex space-x-2">
-        <Button
-          variant="secondary"
-          size="sm"
+        <button
           onClick={() => setShowConfirm(false)}
           disabled={isLoading}
+          className="bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:bg-gray-50 disabled:text-gray-400 px-3 py-1 rounded-md text-xs font-medium transition-colors"
         >
           Annuler
-        </Button>
-        <Button
-          variant="primary"
-          size="sm"
+        </button>
+        <button
           onClick={handleQuickSale}
           disabled={isLoading}
+          className="bg-green-100 text-green-700 hover:bg-green-200 disabled:bg-gray-100 disabled:text-gray-400 px-3 py-1 rounded-md text-xs font-medium transition-colors flex items-center"
         >
           {isLoading ? (
             <>
               <LoadingSpinner size="sm" />
-              Vente...
+              <span className="ml-1">Vente...</span>
             </>
           ) : (
             'Confirmer'
           )}
-        </Button>
+        </button>
       </div>
     )
   }
 
   return (
-    <Button
-      variant="primary"
-      size="sm"
+    <button
       onClick={() => setShowConfirm(true)}
       disabled={isLoading}
+      className="bg-green-100 text-green-700 hover:bg-green-200 disabled:bg-gray-100 disabled:text-gray-400 px-3 py-1 rounded-md text-xs font-medium transition-colors"
     >
       Vente Rapide
-    </Button>
+    </button>
   )
 }

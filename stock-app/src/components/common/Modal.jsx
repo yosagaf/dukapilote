@@ -62,7 +62,7 @@ export default function Modal({
     >
       <div className="flex min-h-full items-center justify-center p-4 text-center">
         <div
-          className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm transition-opacity"
+          className="fixed inset-0 bg-gray-500 bg-opacity-30 backdrop-blur-sm transition-opacity"
           onClick={handleBackdropClick}
           aria-hidden="true"
         />

@@ -19,6 +19,13 @@ export default function Sidebar({ currentPage = 'dashboard', onPageChange }) {
       navigate('/ventes')
     } else if (itemId === 'quotes-invoices' && !isAdmin) {
       navigate('/devis-factures')
+    } else if (itemId === 'credits' && !isAdmin) {
+      // Force navigation to credits page, even if already on a credits page
+      if (location.pathname.startsWith('/credits')) {
+        navigate('/credits', { replace: true })
+      } else {
+        navigate('/credits')
+      }
     } else if (['users', 'shops', 'depots', 'tools'].includes(itemId)) {
       // Navigate to admin dashboard with the specific page
       navigate(`/admin?page=${itemId}`)
@@ -82,6 +89,17 @@ export default function Sidebar({ currentPage = 'dashboard', onPageChange }) {
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      )
+    })
+
+    // Add credits page for shop users
+    menuItems.splice(5, 0, {
+      id: 'credits',
+      label: 'Crédits',
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3zm0 8c-2.761 0-5-2.239-5-5s2.239-5 5-5 5 2.239 5 5-2.239 5-5 5z" />
         </svg>
       )
     })

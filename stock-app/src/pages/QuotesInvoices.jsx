@@ -473,7 +473,7 @@ export default function QuotesInvoicesIntegrated() {
           </header>
 
           <main className="px-6 py-6">
-            <div className="max-w-7xl mx-auto">
+            <div className="w-full">
 
               {drafts.length === 0 ? (
                 <div className="text-center py-12">
@@ -489,7 +489,7 @@ export default function QuotesInvoicesIntegrated() {
                     <div key={draft.id} className="group bg-white rounded-xl shadow-lg border border-gray-100 p-6 hover:shadow-xl hover:scale-105 transition-all duration-300 transform">
                       {/* Header avec gradient */}
                       <div className={`relative overflow-hidden rounded-lg mb-4 ${draft.type === 'quote' ? 'bg-gradient-to-r from-blue-500 to-blue-600' : 'bg-gradient-to-r from-green-500 to-green-600'}`}>
-                        <div className="absolute inset-0 bg-black bg-opacity-10"></div>
+                        <div className="absolute inset-0 bg-gray-500 bg-opacity-10"></div>
                         <div className="relative p-4">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-3">
@@ -662,7 +662,7 @@ export default function QuotesInvoicesIntegrated() {
           </header>
 
           <main className="px-6 py-6">
-            <div className="max-w-6xl mx-auto">
+            <div className="w-full">
 
               {/* Progress Steps */}
               <div className="mb-8">
@@ -836,7 +836,7 @@ export default function QuotesInvoicesIntegrated() {
         </header>
 
         <main className="px-6 py-6">
-          <div className="max-w-7xl mx-auto">
+          <div className="w-full">
 
             {/* Tabs */}
             <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-teal-100 overflow-hidden mb-6">

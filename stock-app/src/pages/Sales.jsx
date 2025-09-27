@@ -278,15 +278,13 @@ export default function Sales() {
                           <div className="text-base font-semibold text-blue-600">{item.quantity}</div>
                         </div>
                         <div className="flex flex-col space-y-1">
-                          <Button
+                          <button
                             onClick={() => handleSaleItem(item)}
-                            variant="primary"
-                            size="sm"
                             disabled={item.quantity <= 0}
-                            className="text-xs px-3 py-1"
+                            className="bg-blue-100 text-blue-700 hover:bg-blue-200 disabled:bg-gray-100 disabled:text-gray-400 px-3 py-1 rounded-md text-xs font-medium transition-colors"
                           >
                             Vendre
-                          </Button>
+                          </button>
                           <QuickSaleButton
                             key={`quick-sale-${item.id}`}
                             item={item}

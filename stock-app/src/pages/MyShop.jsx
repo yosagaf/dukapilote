@@ -534,7 +534,7 @@ export default function MyShop() {
                               <div className="flex space-x-2">
                                 <button
                                   onClick={() => handleEditItem(item)}
-                                  className="text-teal-600 hover:text-teal-900 transition-colors"
+                                  className="bg-teal-100 text-teal-700 hover:bg-teal-200 px-3 py-1 rounded-md text-xs font-medium transition-colors"
                                 >
                                   Modifier
                                 </button>
@@ -554,7 +554,7 @@ export default function MyShop() {
 
       {/* Category Manager Modal */}
       {showCategoryManager && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-30 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">

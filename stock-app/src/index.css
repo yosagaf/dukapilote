@@ -1,1 +1,72 @@
 @import "tailwindcss";
+
+/* Styles pour le sélecteur de date - griser les dates antérieures */
+.date-picker-future-only {
+  position: relative;
+}
+
+.date-picker-future-only::-webkit-calendar-picker-indicator {
+  background: transparent;
+  bottom: 0;
+  color: transparent;
+  cursor: pointer;
+  height: auto;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: auto;
+}
+
+/* Styles pour le calendrier popup */
+.date-picker-future-only::-webkit-calendar-picker-indicator:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* Griser les dates antérieures dans le calendrier */
+.date-picker-future-only::-webkit-calendar-picker-indicator:focus {
+  outline: none;
+}
+
+/* Améliorer l'apparence du champ de date */
+.date-picker-future-only {
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  transition: all 0.15s ease-in-out;
+}
+
+.date-picker-future-only:focus {
+  outline: none;
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.date-picker-future-only:disabled {
+  background-color: #f9fafb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Styles pour les éléments de date */
+.date-picker-future-only::-webkit-datetime-edit-text {
+  color: #374151;
+  padding: 0 0.25rem;
+}
+
+.date-picker-future-only::-webkit-datetime-edit-month-field,
+.date-picker-future-only::-webkit-datetime-edit-day-field,
+.date-picker-future-only::-webkit-datetime-edit-year-field {
+  color: #374151;
+  padding: 0 0.25rem;
+}
+
+/* Message d'aide pour l'utilisateur */
+.date-picker-help {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}

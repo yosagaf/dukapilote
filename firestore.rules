@@ -116,6 +116,15 @@ service cloud.firestore {
       allow update, delete: if isAuthenticated();
     }
 
+    // Credits collection
+    match /credits/{creditId} {
+      // All authenticated users can read and create credits
+      allow read, create: if isAuthenticated();
+      
+      // Users can update/delete credits, admins can update/delete all
+      allow update, delete: if isAuthenticated();
+    }
+
     // Audit logs (if implemented)
     match /audit_logs/{logId} {
       // Only admins can read audit logs

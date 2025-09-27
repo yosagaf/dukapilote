@@ -199,7 +199,7 @@ export default function AdminDashboardRefactored() {
 
       {/* Modales de création */}
       {showCreateUserModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
             <h2 className="text-xl font-bold mb-4">Créer un utilisateur</h2>
             <p className="text-gray-600 mb-4">Fonctionnalité en cours de développement...</p>
@@ -214,7 +214,7 @@ export default function AdminDashboardRefactored() {
       )}
 
       {showCreateShopModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
             <h2 className="text-xl font-bold mb-4">Créer un magasin</h2>
             <p className="text-gray-600 mb-4">Fonctionnalité en cours de développement...</p>
@@ -229,7 +229,7 @@ export default function AdminDashboardRefactored() {
       )}
 
       {showCreateDepotModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
             <h2 className="text-xl font-bold mb-4">Créer un dépôt</h2>
             <p className="text-gray-600 mb-4">Fonctionnalité en cours de développement...</p>
@@ -245,7 +245,7 @@ export default function AdminDashboardRefactored() {
 
       {/* Modale de confirmation de suppression */}
       {showDeleteModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
             <h2 className="text-xl font-bold mb-4">Confirmer la suppression</h2>
             <p className="text-gray-600 mb-4">
