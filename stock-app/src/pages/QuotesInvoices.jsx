@@ -1022,33 +1022,32 @@ function ArticleSelectionStep({ items, selectedItems, onItemSelect, searchTerm, 
           />
         </div>
 
-        {/* Articles Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-96 overflow-y-auto">
+        {/* Articles Grid - Compact */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 max-h-96 overflow-y-auto">
           {filteredItems.map((item) => {
             const isSelected = selectedItems.some(selected => selected.id === item.id)
             return (
               <div
                 key={item.id}
                 onClick={() => onItemSelect(item)}
-                className={`p-4 border rounded-lg cursor-pointer transition-all duration-200 ${
+                className={`p-3 border rounded-lg cursor-pointer transition-all duration-200 ${
                   isSelected 
                     ? 'border-blue-500 bg-blue-50 shadow-md' 
                     : 'border-gray-200 hover:border-gray-300 hover:shadow-sm'
                 }`}
               >
-                <div className="flex items-center justify-between mb-2">
-                  <h5 className="font-medium text-gray-900 truncate">{item.name}</h5>
-                  <div className={`w-4 h-4 rounded border-2 flex items-center justify-center ${
+                <div className="flex items-center justify-between mb-1">
+                  <h5 className="font-medium text-gray-900 text-sm truncate flex-1">{item.name}</h5>
+                  <div className={`w-3 h-3 rounded border-2 flex items-center justify-center ml-2 ${
                     isSelected ? 'bg-blue-500 border-blue-500' : 'border-gray-300'
                   }`}>
                     {isSelected && (
-                      <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <svg className="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                     )}
                   </div>
                 </div>
-                <p className="text-sm text-gray-600 mb-1">{item.category}</p>
                 <div className="flex items-center justify-between text-xs text-gray-500">
                   <span>Stock: {item.quantity}</span>
                   <span className="font-medium text-green-600">{item.price?.toLocaleString('fr-FR')} KMF</span>
@@ -1097,48 +1096,45 @@ function PricingStep({ selectedItems, onItemChange, onRemoveItem, pricingMode, s
         ) : (
           <div className="space-y-4">
             {selectedItems.map((item) => (
-              <div key={item.id} className="bg-white border border-gray-200 rounded-lg p-4">
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <h5 className="font-medium text-gray-900">{item.name}</h5>
-                    <p className="text-sm text-gray-600">{item.category}</p>
-                  </div>
+              <div key={item.id} className="bg-white border border-gray-200 rounded-lg p-3">
+                <div className="flex items-center justify-between mb-3">
+                  <h5 className="font-medium text-gray-900 text-sm truncate flex-1">{item.name}</h5>
                   <button
                     onClick={() => onRemoveItem(item.id)}
-                    className="text-red-500 hover:text-red-700 transition-colors"
+                    className="text-red-500 hover:text-red-700 transition-colors ml-2"
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-3 gap-3">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Quantité</label>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Quantité</label>
                     <input
                       type="number"
                       min="1"
                       value={item.quantity}
                       onChange={(e) => onItemChange(item.id, 'quantity', parseInt(e.target.value) || 1)}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Prix unitaire (KMF)</label>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Prix unitaire</label>
                     <input
                       type="number"
                       min="0"
                       step="0.01"
                       value={item.unitPrice}
                       onChange={(e) => onItemChange(item.id, 'unitPrice', parseFloat(e.target.value) || 0)}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Total (KMF)</label>
-                    <div className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50 text-gray-700">
-                      {item.totalPrice.toLocaleString('fr-FR')}
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Total</label>
+                    <div className="w-full border border-gray-300 rounded px-2 py-1 bg-gray-50 text-gray-700 text-sm">
+                      {item.totalPrice.toLocaleString('fr-FR')} KMF
                     </div>
                   </div>
                 </div>
