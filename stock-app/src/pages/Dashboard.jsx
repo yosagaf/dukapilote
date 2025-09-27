@@ -229,38 +229,38 @@ export default function Dashboard() {
           {/* Actions Rapides Admin */}
           <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-8 border border-teal-100">
             <h2 className="text-xl font-bold text-gray-900 mb-6">Actions Rapides - Administration</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               <button
                 onClick={() => window.location.href = '/admin'}
-                className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+                className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
               >
-                <div className="flex items-center space-x-3">
-                  <div className="bg-white/20 p-3 rounded-lg">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="flex items-center space-x-2">
+                  <div className="bg-white/20 p-2 rounded-lg">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                   </div>
                   <div className="text-left">
-                    <h3 className="font-semibold text-lg">Panel Admin</h3>
-                    <p className="text-blue-100 text-sm">Gestion complète</p>
+                    <h3 className="font-semibold text-base">Panel Admin</h3>
+                    <p className="text-blue-100 text-xs">Gestion complète</p>
                   </div>
                 </div>
               </button>
 
               <button
                 onClick={() => window.location.href = '/inventaire'}
-                className="bg-gradient-to-r from-teal-500 to-teal-600 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+                className="bg-gradient-to-r from-teal-500 to-teal-600 text-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
               >
-                <div className="flex items-center space-x-3">
-                  <div className="bg-white/20 p-3 rounded-lg">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="flex items-center space-x-2">
+                  <div className="bg-white/20 p-2 rounded-lg">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                     </svg>
                   </div>
                   <div className="text-left">
-                    <h3 className="font-semibold text-lg">Inventaire</h3>
-                    <p className="text-teal-100 text-sm">Gérer les stocks du magasin</p>
+                    <h3 className="font-semibold text-base">Inventaire</h3>
+                    <p className="text-teal-100 text-xs">Gérer les stocks du magasin</p>
                   </div>
                 </div>
               </button>
@@ -303,7 +303,7 @@ export default function Dashboard() {
 
           {/* Statistics Cards */}
           <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-8 border border-teal-100">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Statistiques du Système</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-6">Statistiques du Système</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
               <StatCard
               gradient="blue"
@@ -438,71 +438,71 @@ export default function Dashboard() {
         {/* Actions Rapides */}
         <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-8 border border-teal-100">
           <h2 className="text-xl font-bold text-gray-900 mb-6">Actions Rapides</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="bg-gradient-to-r from-teal-500 to-teal-600 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
-            >
-              <div className="flex items-center space-x-3">
-                <div className="bg-white/20 p-3 rounded-lg">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                  </svg>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              <button
+                onClick={() => setShowAddModal(true)}
+                className="bg-gradient-to-r from-teal-500 to-teal-600 text-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+              >
+                <div className="flex items-center space-x-2">
+                  <div className="bg-white/20 p-2 rounded-lg">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                  </div>
+                  <div className="text-left">
+                    <h3 className="font-semibold text-base">Ajouter Article</h3>
+                    <p className="text-teal-100 text-xs">Nouvel article au magasin</p>
+                  </div>
                 </div>
-                <div className="text-left">
-                  <h3 className="font-semibold text-lg">Ajouter Article</h3>
-                  <p className="text-teal-100 text-sm">Nouvel article au magasin</p>
-                </div>
-              </div>
-            </button>
+              </button>
 
             <button
               onClick={() => window.location.href = '/devis-factures'}
-              className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+              className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
             >
-              <div className="flex items-center space-x-3">
-                <div className="bg-white/20 p-3 rounded-lg">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="flex items-center space-x-2">
+                <div className="bg-white/20 p-2 rounded-lg">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                 </div>
                 <div className="text-left">
-                  <h3 className="font-semibold text-lg">Nouveau Devis</h3>
-                  <p className="text-blue-100 text-sm">Créer un devis</p>
+                  <h3 className="font-semibold text-base">Nouveau Devis</h3>
+                  <p className="text-blue-100 text-xs">Créer un devis</p>
                 </div>
               </div>
             </button>
 
             <button
               onClick={() => window.location.href = '/devis-factures'}
-              className="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+              className="bg-gradient-to-r from-green-500 to-green-600 text-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
             >
-              <div className="flex items-center space-x-3">
-                <div className="bg-white/20 p-3 rounded-lg">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="flex items-center space-x-2">
+                <div className="bg-white/20 p-2 rounded-lg">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                   </svg>
                 </div>
                 <div className="text-left">
-                  <h3 className="font-semibold text-lg">Nouvelle Facture</h3>
-                  <p className="text-green-100 text-sm">Émettre une facture</p>
+                  <h3 className="font-semibold text-base">Nouvelle Facture</h3>
+                  <p className="text-green-100 text-xs">Émettre une facture</p>
                 </div>
               </div>
             </button>
 
             <button
               onClick={() => window.location.href = '/inventaire'}
-              className="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+              className="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
             >
-              <div className="flex items-center space-x-3">
-                <div className="bg-white/20 p-3 rounded-lg">
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="flex items-center space-x-2">
+                <div className="bg-white/20 p-2 rounded-lg">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                   </svg>
                 </div>
                 <div className="text-left">
-                  <h3 className="font-semibold text-lg">Gérer Stock</h3>
-                  <p className="text-purple-100 text-sm">Voir l'inventaire</p>
+                  <h3 className="font-semibold text-base">Gérer Stock</h3>
+                  <p className="text-purple-100 text-xs">Voir l'inventaire</p>
                 </div>
               </div>
             </button>
@@ -513,7 +513,7 @@ export default function Dashboard() {
         <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-8 border border-teal-100">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">
+              <h2 className="text-xl font-bold text-gray-900">
                 Statistiques - {userShop ? userShop.name : 'Mon Magasin'}
               </h2>
               {userShop && (
