@@ -225,12 +225,87 @@ export default function Dashboard() {
       const totalMagasins = dukanis.length
 
       return (
-        <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-8 border border-teal-100">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Tableau de Bord - Statistiques du Système</h2>
+        <div className="space-y-8">
+          {/* Actions Rapides Admin */}
+          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-8 border border-teal-100">
+            <h2 className="text-xl font-bold text-gray-900 mb-6">Actions Rapides - Administration</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <button
+                onClick={() => window.location.href = '/admin'}
+                className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+              >
+                <div className="flex items-center space-x-3">
+                  <div className="bg-white/20 p-3 rounded-lg">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </div>
+                  <div className="text-left">
+                    <h3 className="font-semibold text-lg">Panel Admin</h3>
+                    <p className="text-blue-100 text-sm">Gestion complète</p>
+                  </div>
+                </div>
+              </button>
+
+              <button
+                onClick={() => window.location.href = '/inventaire'}
+                className="bg-gradient-to-r from-teal-500 to-teal-600 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+              >
+                <div className="flex items-center space-x-3">
+                  <div className="bg-white/20 p-3 rounded-lg">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
+                  </div>
+                  <div className="text-left">
+                    <h3 className="font-semibold text-lg">Inventaire</h3>
+                    <p className="text-teal-100 text-sm">Gérer les stocks</p>
+                  </div>
+                </div>
+              </button>
+
+              <button
+                onClick={() => window.location.href = '/devis-factures'}
+                className="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+              >
+                <div className="flex items-center space-x-3">
+                  <div className="bg-white/20 p-3 rounded-lg">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                  <div className="text-left">
+                    <h3 className="font-semibold text-lg">Documents</h3>
+                    <p className="text-green-100 text-sm">Devis & Factures</p>
+                  </div>
+                </div>
+              </button>
+
+              <button
+                onClick={() => window.location.href = '/rapports'}
+                className="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+              >
+                <div className="flex items-center space-x-3">
+                  <div className="bg-white/20 p-3 rounded-lg">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                  </div>
+                  <div className="text-left">
+                    <h3 className="font-semibold text-lg">Rapports</h3>
+                    <p className="text-purple-100 text-sm">Analyses & Stats</p>
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
 
           {/* Statistics Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8">
-            <StatCard
+          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-8 border border-teal-100">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Statistiques du Système</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+              <StatCard
               gradient="blue"
               title="Dépôts"
               value={totalDepots}
@@ -273,6 +348,7 @@ export default function Dashboard() {
                 </svg>
               }
             />
+            </div>
           </div>
         </div>
       )
@@ -359,12 +435,86 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* Actions Rapides */}
+        <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-8 border border-teal-100">
+          <h2 className="text-xl font-bold text-gray-900 mb-6">Actions Rapides</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="bg-gradient-to-r from-teal-500 to-teal-600 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+            >
+              <div className="flex items-center space-x-3">
+                <div className="bg-white/20 p-3 rounded-lg">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                </div>
+                <div className="text-left">
+                  <h3 className="font-semibold text-lg">Ajouter Article</h3>
+                  <p className="text-teal-100 text-sm">Nouvel article au stock</p>
+                </div>
+              </div>
+            </button>
+
+            <button
+              onClick={() => window.location.href = '/devis-factures'}
+              className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+            >
+              <div className="flex items-center space-x-3">
+                <div className="bg-white/20 p-3 rounded-lg">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <div className="text-left">
+                  <h3 className="font-semibold text-lg">Nouveau Devis</h3>
+                  <p className="text-blue-100 text-sm">Créer un devis</p>
+                </div>
+              </div>
+            </button>
+
+            <button
+              onClick={() => window.location.href = '/devis-factures'}
+              className="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+            >
+              <div className="flex items-center space-x-3">
+                <div className="bg-white/20 p-3 rounded-lg">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                </div>
+                <div className="text-left">
+                  <h3 className="font-semibold text-lg">Nouvelle Facture</h3>
+                  <p className="text-green-100 text-sm">Émettre une facture</p>
+                </div>
+              </div>
+            </button>
+
+            <button
+              onClick={() => window.location.href = '/inventaire'}
+              className="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+            >
+              <div className="flex items-center space-x-3">
+                <div className="bg-white/20 p-3 rounded-lg">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                  </svg>
+                </div>
+                <div className="text-left">
+                  <h3 className="font-semibold text-lg">Gérer Stock</h3>
+                  <p className="text-purple-100 text-sm">Voir l'inventaire</p>
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
+
         {/* Main Statistics */}
         <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-8 border border-teal-100">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-2xl font-bold text-gray-900">
-                Tableau de Bord - {userShop ? userShop.name : 'Mon Magasin'}
+                Statistiques - {userShop ? userShop.name : 'Mon Magasin'}
               </h2>
               {userShop && (
                 <p className="text-sm text-gray-600 mt-1">
@@ -427,6 +577,42 @@ export default function Dashboard() {
             />
           </div>
         </div>
+
+        {/* Alertes et Notifications */}
+        {!isAdmin && (stockLow > 0 || stockOut > 0) && (
+          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-8 border border-teal-100">
+            <h2 className="text-xl font-bold text-gray-900 mb-6">Alertes Stock</h2>
+            <div className="space-y-4">
+              {stockOut > 0 && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                    <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-red-800">Rupture de stock</h3>
+                    <p className="text-red-600 text-sm">{stockOut} article{stockOut > 1 ? 's' : ''} en rupture de stock</p>
+                  </div>
+                </div>
+              )}
+              
+              {stockLow > 0 && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
+                    <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-yellow-800">Stock faible</h3>
+                    <p className="text-yellow-600 text-sm">{stockLow} article{stockLow > 1 ? 's' : ''} avec stock faible</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Sales Dashboard Section */}
         {!isAdmin && salesStats && (
