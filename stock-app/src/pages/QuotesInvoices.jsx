@@ -10,6 +10,7 @@ import QuoteInvoiceCard from '../components/QuoteInvoiceCard'
 import { downloadPDF } from '../utils/pdfGeneratorModern.jsx'
 import { pdf } from '@react-pdf/renderer'
 import { QuotePDF, InvoicePDF } from '../utils/pdfGeneratorModern.jsx'
+import { generateDocumentNumber, previewDocumentNumber } from '../utils/simpleNumberingService.js'
 
 export default function QuotesInvoicesIntegrated() {
   const { userProfile, logout } = useAuth()
@@ -33,7 +34,7 @@ export default function QuotesInvoicesIntegrated() {
   const [searchTerm, setSearchTerm] = useState('')
   const [shopInfo, setShopInfo] = useState(null)
   const [drafts, setDrafts] = useState([]) // Brouillons sauvegardés
-  const [showDrafts, setShowDrafts] = useState(false) // Afficher l'historique des brouillons
+  const [showDrafts, setShowDrafts] = useState(false) // Afficher l'historique des Brouillons
   const [showNotification, setShowNotification] = useState(false) // Afficher la notification
   const [notificationMessage, setNotificationMessage] = useState('') // Message de notification
 
@@ -57,20 +58,43 @@ export default function QuotesInvoicesIntegrated() {
     if (!userProfile?.shopId) return
     
     try {
-      const { getDoc, doc } = await import('firebase/firestore')
+      const { getDoc, doc, updateDoc } = await import('firebase/firestore')
       const shopDoc = await getDoc(doc(db, 'shops', userProfile.shopId))
       if (shopDoc.exists()) {
-        setShopInfo({
+        const shopData = {
           id: shopDoc.id,
           ...shopDoc.data()
-        })
+        }
+        
+        // Vérifier si les champs phone et phone2 existent, sinon les ajouter
+        const needsUpdate = !shopData.phone || !shopData.phone2 || !shopData.email
+        if (needsUpdate) {
+          await updateDoc(doc(db, 'shops', userProfile.shopId), {
+            phone: shopData.phone || '+269 123 45 67',
+            phone2: shopData.phone2 || '+269 987 65 43',
+            email: shopData.email || 'contact@magasin.com',
+            updated_at: new Date()
+          })
+          
+          // Recharger les données mises à jour
+          const updatedShopDoc = await getDoc(doc(db, 'shops', userProfile.shopId))
+          if (updatedShopDoc.exists()) {
+            const updatedShopData = {
+              id: updatedShopDoc.id,
+              ...updatedShopDoc.data()
+            }
+            setShopInfo(updatedShopData)
+            return
+          }
+        }
+        setShopInfo(shopData)
       }
     } catch (error) {
       console.error('Erreur lors du chargement des informations du magasin:', error)
     }
   }
 
-  // Charger les brouillons depuis le localStorage
+  // Charger les Brouillons depuis le localStorage
   const loadDrafts = () => {
     try {
       const savedDrafts = localStorage.getItem(`drafts_${userProfile?.uid}`)
@@ -78,11 +102,11 @@ export default function QuotesInvoicesIntegrated() {
         setDrafts(JSON.parse(savedDrafts))
       }
     } catch (error) {
-      console.error('Erreur lors du chargement des brouillons:', error)
+      console.error('Erreur lors du chargement des Brouillons:', error)
     }
   }
 
-  // Sauvegarder un brouillon
+  // Sauvegarder un Brouillon
   const saveDraft = () => {
     const draft = {
       id: Date.now().toString(),
@@ -100,7 +124,7 @@ export default function QuotesInvoicesIntegrated() {
     showStyledNotification('Brouillon sauvegardé avec succès !')
   }
 
-  // Charger un brouillon
+  // Charger un Brouillon
   const loadDraft = (draft) => {
     setWizardData(draft.data)
     setWizardType(draft.type)
@@ -109,9 +133,9 @@ export default function QuotesInvoicesIntegrated() {
     setShowDrafts(false)
   }
 
-  // Supprimer un brouillon
+  // Supprimer un Brouillon
   const deleteDraft = (draftId) => {
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce brouillon ?')) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce Brouillon ?')) {
       const newDrafts = drafts.filter(d => d.id !== draftId)
       setDrafts(newDrafts)
       localStorage.setItem(`drafts_${userProfile?.uid}`, JSON.stringify(newDrafts))
@@ -262,9 +286,12 @@ export default function QuotesInvoicesIntegrated() {
     try {
       const total = wizardData.selectedItems.reduce((sum, item) => sum + item.totalPrice, 0)
       
+      // Générer le numéro avec le nouveau système (incrémente le compteur)
+      const documentNumber = await generateDocumentNumber(wizardType)
+      
       const documentData = {
         type: wizardType,
-        number: `${wizardType === 'quote' ? 'DEV' : 'FAC'}-${Date.now()}`,
+        number: documentNumber,
         clientInfo: wizardData.clientInfo,
         selectedItems: wizardData.selectedItems,
         totalAmount: total,
@@ -342,7 +369,7 @@ export default function QuotesInvoicesIntegrated() {
                 <div className="flex-1">
                   <h1 className="text-2xl font-bold text-gray-900">Brouillons Sauvegardés</h1>
                   <p className="text-sm text-gray-600 mt-1">
-                    Reprenez vos brouillons de devis et factures
+                    Reprenez vos Brouillons de devis et factures
                   </p>
                 </div>
                 <div className="flex items-center space-x-3">
@@ -379,7 +406,7 @@ export default function QuotesInvoicesIntegrated() {
                   <svg className="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                   </svg>
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">Aucun brouillon sauvegardé</h3>
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">Aucun Brouillon sauvegardé</h3>
                   <p className="text-gray-500">Commencez par créer un devis ou une facture</p>
                 </div>
               ) : (
@@ -414,7 +441,7 @@ export default function QuotesInvoicesIntegrated() {
                               <button
                                 onClick={() => loadDraft(draft)}
                                 className="p-2 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full transition-all duration-200 group-hover:scale-110"
-                                title="Reprendre ce brouillon"
+                                title="Reprendre ce Brouillon"
                               >
                                 <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -424,7 +451,7 @@ export default function QuotesInvoicesIntegrated() {
                               <button
                                 onClick={() => deleteDraft(draft.id)}
                                 className="p-2 bg-red-500 bg-opacity-20 hover:bg-opacity-30 rounded-full transition-all duration-200 group-hover:scale-110"
-                                title="Supprimer ce brouillon"
+                                title="Supprimer ce Brouillon"
                               >
                                 <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -495,7 +522,7 @@ export default function QuotesInvoicesIntegrated() {
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                           </svg>
-                          <span>Reprendre ce brouillon</span>
+                          <span>Reprendre ce Brouillon</span>
                         </button>
                       </div>
                     </div>
@@ -644,7 +671,7 @@ export default function QuotesInvoicesIntegrated() {
                         <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
                         </svg>
-                        Sauvegarder comme brouillon
+                        Sauvegarder Brouillon
                       </Button>
                       <Button
                         onClick={handleSubmit}
@@ -1059,9 +1086,12 @@ function PreviewStep({ clientInfo, selectedItems, totalAmount, date, isQuote, sh
   // Générer automatiquement le PDF au chargement
   useEffect(() => {
     const generatePDF = async () => {
+      // Générer le numéro avec le nouveau système
+      const documentNumber = await generateDocumentNumber(isQuote ? 'quote' : 'invoice')
+      
       const documentData = {
         type: isQuote ? 'quote' : 'invoice',
-        number: `${isQuote ? 'DEV' : 'FAC'}-${Date.now()}`,
+        number: documentNumber,
         clientInfo,
         selectedItems: selectedItems,
         totalAmount,
@@ -1088,9 +1118,12 @@ function PreviewStep({ clientInfo, selectedItems, totalAmount, date, isQuote, sh
   }, [clientInfo, selectedItems, totalAmount, date, isQuote, shopInfo])
 
   const handleDownloadPDF = async () => {
+    // Prévisualiser le numéro SANS l'incrémenter
+    const documentNumber = await previewDocumentNumber(isQuote ? 'quote' : 'invoice')
+    
     const documentData = {
       type: isQuote ? 'quote' : 'invoice',
-      number: `${isQuote ? 'DEV' : 'FAC'}-${Date.now()}`,
+      number: documentNumber,
       clientInfo,
       selectedItems: selectedItems,
       totalAmount,

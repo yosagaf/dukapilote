@@ -5,7 +5,7 @@ import React from 'react'
  * @param {string} currentTab - Onglet actuel
  * @param {Function} onNewQuote - Fonction pour créer un nouveau devis
  * @param {Function} onNewInvoice - Fonction pour créer une nouvelle facture
- * @param {Function} onShowDrafts - Fonction pour afficher les brouillons
+ * @param {Function} onShowDrafts - Fonction pour afficher les Brouillons
  * @param {Function} onLogout - Fonction pour se déconnecter
  */
 export default function QuotesHeader({ 
@@ -27,7 +27,7 @@ export default function QuotesHeader({
           <p className="text-gray-600">
             {currentTab === 'quotes' && 'Gérez vos devis et propositions commerciales'}
             {currentTab === 'invoices' && 'Gérez vos factures et encaissements'}
-            {currentTab === 'drafts' && 'Gérez vos brouillons en cours'}
+            {currentTab === 'drafts' && 'Gérez vos Brouillons en cours'}
           </p>
         </div>
         

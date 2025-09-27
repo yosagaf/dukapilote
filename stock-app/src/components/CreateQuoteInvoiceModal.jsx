@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { collection, query, where, onSnapshot, addDoc } from 'firebase/firestore'
 import { db } from '../firebase'
+import { generateDocumentNumber, previewDocumentNumber } from '../utils/simpleNumberingService.js'
 import Button from './common/Button'
 import LoadingSpinner from './common/LoadingSpinner'
 
@@ -145,15 +146,8 @@ export default function CreateQuoteInvoiceModal({ type, onClose, onSuccess }) {
     checkStockAvailability()
   }, [selectedItems])
 
-  const generateNumber = () => {
-    const now = new Date()
-    const year = now.getFullYear()
-    const month = String(now.getMonth() + 1).padStart(2, '0')
-    const day = String(now.getDate()).padStart(2, '0')
-    const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0')
-    
-    const prefix = isQuote ? 'DEV' : 'FAC'
-    return `${prefix}${year}${month}${day}${random}`
+  const generateNumber = async () => {
+    return await generateDocumentNumber(isQuote ? 'quote' : 'invoice')
   }
 
   const handleSubmit = async (e) => {
@@ -173,7 +167,7 @@ export default function CreateQuoteInvoiceModal({ type, onClose, onSuccess }) {
       }
 
       const documentData = {
-        number: generateNumber(),
+        number: await generateNumber(),
         type: isQuote ? 'quote' : 'invoice',
         client: clientInfo,
         items: selectedItems,

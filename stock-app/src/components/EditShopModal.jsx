@@ -5,7 +5,10 @@ import { db } from '../firebase'
 export default function EditShopModal({ onClose, shop }) {
   const [formData, setFormData] = useState({
     name: shop?.name || '',
-    location: shop?.location || ''
+    location: shop?.location || '',
+    phone: shop?.phone || '',
+    phone2: shop?.phone2 || '',
+    email: shop?.email || ''
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -25,6 +28,9 @@ export default function EditShopModal({ onClose, shop }) {
       await updateDoc(doc(db, 'shops', shop.id), {
         name: formData.name,
         location: formData.location,
+        phone: formData.phone,
+        phone2: formData.phone2,
+        email: formData.email,
         updated_at: new Date()
       })
       onClose()
@@ -88,6 +94,42 @@ export default function EditShopModal({ onClose, shop }) {
                 onChange={handleChange}
                 className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 placeholder="Ex: Moroni - Hadoudja, Anjouan - Mutsamudu..."
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Téléphone</label>
+              <input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                placeholder="Ex: +269 XXX XX XX"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Téléphone 2 (optionnel)</label>
+              <input
+                type="tel"
+                name="phone2"
+                value={formData.phone2}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                placeholder="Ex: +269 XXX XX XX"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                placeholder="Ex: contact@magasin.com"
               />
             </div>
 

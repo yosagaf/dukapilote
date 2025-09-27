@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
   page: {
     flexDirection: 'column',
     backgroundColor: '#FFFFFF',
-    padding: 20,
+    padding: 60,
     fontFamily: 'Roboto',
   },
   header: {
@@ -220,6 +220,7 @@ const QuotePDF = ({ documentData, shopInfo }) => {
             <Text style={styles.companyDetails}>
               {shopInfo?.location || 'Moroni, Comores'}
               {shopInfo?.phone && `\nTél: ${shopInfo.phone}`}
+              {shopInfo?.phone2 && `\nTél 2: ${shopInfo.phone2}`}
               {shopInfo?.email && `\nEmail: ${shopInfo.email}`}
             </Text>
           </View>
@@ -307,6 +308,7 @@ const InvoicePDF = ({ documentData, shopInfo }) => {
             <Text style={styles.companyDetails}>
               {shopInfo?.location || 'Moroni, Comores'}
               {shopInfo?.phone && `\nTél: ${shopInfo.phone}`}
+              {shopInfo?.phone2 && `\nTél 2: ${shopInfo.phone2}`}
               {shopInfo?.email && `\nEmail: ${shopInfo.email}`}
             </Text>
           </View>

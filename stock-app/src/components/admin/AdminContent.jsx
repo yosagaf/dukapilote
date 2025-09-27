@@ -148,7 +148,7 @@ export default function AdminContent({ currentPage, userProfile, onLogout }) {
                   </div>
                   <div className="ml-3">
                     <h3 className="text-lg font-semibold text-gray-900">{shop.name}</h3>
-                    <p className="text-sm text-gray-600">{shop.address}</p>
+                    <p className="text-sm text-gray-600">{shop.location}</p>
                   </div>
                 </div>
               </div>
@@ -157,6 +157,11 @@ export default function AdminContent({ currentPage, userProfile, onLogout }) {
                 <p className="text-sm text-gray-600">
                   <span className="font-medium">Téléphone:</span> {shop.phone || 'N/A'}
                 </p>
+                {shop.phone2 && (
+                  <p className="text-sm text-gray-600">
+                    <span className="font-medium">Téléphone 2:</span> {shop.phone2}
+                  </p>
+                )}
                 <p className="text-sm text-gray-600">
                   <span className="font-medium">Email:</span> {shop.email || 'N/A'}
                 </p>

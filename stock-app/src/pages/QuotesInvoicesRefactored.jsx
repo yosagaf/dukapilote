@@ -68,7 +68,7 @@ export default function QuotesInvoicesRefactored() {
       setIsLoading(true)
       clearError()
       
-      // Charger les devis, factures et brouillons
+      // Charger les devis, factures et Brouillons
       await Promise.all([
         loadQuotes(),
         loadInvoices(),
@@ -92,7 +92,7 @@ export default function QuotesInvoicesRefactored() {
   }
 
   const loadDrafts = async () => {
-    // TODO: Implémenter le chargement des brouillons
+    // TODO: Implémenter le chargement des Brouillons
     setDrafts([])
   }
 

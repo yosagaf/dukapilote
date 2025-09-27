@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { collection, query, where, onSnapshot, addDoc } from 'firebase/firestore'
 import { db } from '../firebase'
+import { generateDocumentNumber, previewDocumentNumber } from '../utils/simpleNumberingService.js'
 import Button from './common/Button'
 import LoadingSpinner from './common/LoadingSpinner'
 
@@ -118,7 +119,7 @@ export default function QuoteInvoiceWizard({ type, onClose, onSuccess }) {
       
       const documentData = {
         type: isQuote ? 'quote' : 'invoice',
-        number: `${isQuote ? 'DEV' : 'FAC'}-${Date.now()}`,
+        number: await generateDocumentNumber(isQuote ? 'quote' : 'invoice'),
         clientInfo,
         items: selectedItems,
         totalAmount: total,

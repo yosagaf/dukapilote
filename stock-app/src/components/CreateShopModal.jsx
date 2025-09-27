@@ -7,6 +7,7 @@ export default function CreateShopModal({ onClose }) {
     name: '',
     location: '',
     phone: '',
+    phone2: '',
     email: '',
     type: 'magasin',
     linkedDepotIds: []
@@ -33,6 +34,7 @@ export default function CreateShopModal({ onClose }) {
         name: formData.name,
         location: formData.location,
         phone: formData.phone,
+        phone2: formData.phone2,
         email: formData.email,
         type: formData.type,
         created_at: new Date(),
@@ -132,6 +134,18 @@ export default function CreateShopModal({ onClose }) {
                 type="tel"
                 name="phone"
                 value={formData.phone}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
+                placeholder="Ex: +269 XXX XX XX"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Téléphone 2 (optionnel)</label>
+              <input
+                type="tel"
+                name="phone2"
+                value={formData.phone2}
                 onChange={handleChange}
                 className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200"
                 placeholder="Ex: +269 XXX XX XX"

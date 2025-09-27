@@ -100,24 +100,20 @@ service cloud.firestore {
 
     // Quotes collection
     match /quotes/{quoteId} {
-      // Users can read and create their own quotes, admins can read all
-      allow read, create: if isAuthenticated() && 
-        (request.resource.data.userId == request.auth.uid || isAdmin());
+      // All authenticated users can read and create quotes
+      allow read, create: if isAuthenticated();
       
-      // Users can update/delete their own quotes, admins can update/delete all
-      allow update, delete: if isAuthenticated() && 
-        (resource.data.userId == request.auth.uid || isAdmin());
+      // Users can update/delete quotes, admins can update/delete all
+      allow update, delete: if isAuthenticated();
     }
 
     // Invoices collection
     match /invoices/{invoiceId} {
-      // Users can read and create their own invoices, admins can read all
-      allow read, create: if isAuthenticated() && 
-        (request.resource.data.userId == request.auth.uid || isAdmin());
+      // All authenticated users can read and create invoices
+      allow read, create: if isAuthenticated();
       
-      // Users can update/delete their own invoices, admins can update/delete all
-      allow update, delete: if isAuthenticated() && 
-        (resource.data.userId == request.auth.uid || isAdmin());
+      // Users can update/delete invoices, admins can update/delete all
+      allow update, delete: if isAuthenticated();
     }
 
     // Audit logs (if implemented)

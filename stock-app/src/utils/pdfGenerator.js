@@ -5,7 +5,7 @@ export const generateQuotePDF = (documentData, shopInfo = null) => {
   const doc = new jsPDF('p', 'mm', 'a4')
   const pageWidth = doc.internal.pageSize.getWidth()
   const pageHeight = doc.internal.pageSize.getHeight()
-  const margin = 15
+  const margin = 60
   let yPosition = margin
 
   // Configuration des couleurs modernes
@@ -62,6 +62,7 @@ export const generateQuotePDF = (documentData, shopInfo = null) => {
   const companyName = shopInfo?.name || 'DUKAPILOTE'
   const companyLocation = shopInfo?.location || 'Moroni, Comores'
   const companyPhone = shopInfo?.phone || '+269 XXX XX XX'
+  const companyPhone2 = shopInfo?.phone2 || null
   const companyEmail = shopInfo?.email || 'contact@dukapilote.com'
   
   // Bande colorée en haut
@@ -75,6 +76,10 @@ export const generateQuotePDF = (documentData, shopInfo = null) => {
   let contactY = 20
   if (companyPhone) {
     addText(`📞 ${companyPhone}`, pageWidth - margin, contactY, { fontSize: 10, color: colors.gray, align: 'right' })
+    contactY += 5
+  }
+  if (companyPhone2) {
+    addText(`📞 ${companyPhone2}`, pageWidth - margin, contactY, { fontSize: 10, color: colors.gray, align: 'right' })
     contactY += 5
   }
   if (companyEmail) {
@@ -201,7 +206,7 @@ export const generateInvoicePDF = (documentData, shopInfo = null) => {
   const doc = new jsPDF('p', 'mm', 'a4')
   const pageWidth = doc.internal.pageSize.getWidth()
   const pageHeight = doc.internal.pageSize.getHeight()
-  const margin = 15
+  const margin = 60
   let yPosition = margin
 
   // Configuration des couleurs modernes (rouge pour facture)
@@ -258,6 +263,7 @@ export const generateInvoicePDF = (documentData, shopInfo = null) => {
   const companyName = shopInfo?.name || 'DUKAPILOTE'
   const companyLocation = shopInfo?.location || 'Moroni, Comores'
   const companyPhone = shopInfo?.phone || '+269 XXX XX XX'
+  const companyPhone2 = shopInfo?.phone2 || null
   const companyEmail = shopInfo?.email || 'contact@dukapilote.com'
   
   // Bande colorée en haut
@@ -271,6 +277,10 @@ export const generateInvoicePDF = (documentData, shopInfo = null) => {
   let contactY = 20
   if (companyPhone) {
     addText(`📞 ${companyPhone}`, pageWidth - margin, contactY, { fontSize: 10, color: colors.gray, align: 'right' })
+    contactY += 5
+  }
+  if (companyPhone2) {
+    addText(`📞 ${companyPhone2}`, pageWidth - margin, contactY, { fontSize: 10, color: colors.gray, align: 'right' })
     contactY += 5
   }
   if (companyEmail) {
