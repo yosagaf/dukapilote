@@ -243,8 +243,12 @@ const styles = StyleSheet.create({
 // Composant PDF pour Devis
 export const QuotePDF = ({ documentData, shopInfo }) => {
   const calculatedAmount = documentData.selectedItems.reduce((sum, item) => sum + item.totalPrice, 0)
-  const finalAmount = documentData.totalAmount || calculatedAmount
+  const discountAmount = documentData.discountAmount || 0
+  const subtotalAfterDiscount = documentData.subtotalAfterDiscount || calculatedAmount
+  const finalAmount = documentData.totalAmount || subtotalAfterDiscount
   const showCalculatedAmount = documentData.showCalculatedAmount !== false
+  const showDiscountInPDF = documentData.showDiscountInPDF !== false
+  const hasDiscount = discountAmount > 0 && showDiscountInPDF
   
   return (
     <Document>
@@ -307,9 +311,34 @@ export const QuotePDF = ({ documentData, shopInfo }) => {
 
         {/* Total */}
         <View style={styles.totalSection}>
-          <Text style={styles.totalLabel}>TOTAL (KMF)</Text>
-          <Text style={styles.totalAmount}>{finalAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')}</Text>
-          {showCalculatedAmount && finalAmount !== calculatedAmount && (
+          {hasDiscount ? (
+            <View>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
+                <Text style={[styles.totalLabel, { fontSize: 10 }]}>SOUS-TOTAL</Text>
+                <Text style={[styles.totalAmount, { fontSize: 12 }]}>{calculatedAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')}</Text>
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
+                <Text style={[styles.totalLabel, { fontSize: 10 }]}>
+                  REMISE ({documentData.discountType === 'percentage' ? `${documentData.discountValue}%` : 'Montant fixe'})
+                </Text>
+                <Text style={[styles.totalAmount, { fontSize: 12, color: '#DC2626' }]}>
+                  -{discountAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')}
+                </Text>
+              </View>
+              <View style={{ borderTopWidth: 1, borderTopColor: '#000000', paddingTop: 5, marginTop: 5 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                  <Text style={styles.totalLabel}>TOTAL (KMF)</Text>
+                  <Text style={styles.totalAmount}>{finalAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')}</Text>
+                </View>
+              </View>
+            </View>
+          ) : (
+            <View>
+              <Text style={styles.totalLabel}>TOTAL (KMF)</Text>
+              <Text style={styles.totalAmount}>{finalAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')}</Text>
+            </View>
+          )}
+          {showCalculatedAmount && finalAmount !== calculatedAmount && !hasDiscount && (
             <Text style={[styles.totalAmount, { fontSize: 12, color: '#666666', marginTop: 5 }]}>
               (Calculé: {calculatedAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')} KMF)
             </Text>
@@ -345,8 +374,12 @@ export const QuotePDF = ({ documentData, shopInfo }) => {
 // Composant PDF pour Facture
 export const InvoicePDF = ({ documentData, shopInfo }) => {
   const calculatedAmount = documentData.selectedItems.reduce((sum, item) => sum + item.totalPrice, 0)
-  const finalAmount = documentData.totalAmount || calculatedAmount
+  const discountAmount = documentData.discountAmount || 0
+  const subtotalAfterDiscount = documentData.subtotalAfterDiscount || calculatedAmount
+  const finalAmount = documentData.totalAmount || subtotalAfterDiscount
   const showCalculatedAmount = documentData.showCalculatedAmount !== false
+  const showDiscountInPDF = documentData.showDiscountInPDF !== false
+  const hasDiscount = discountAmount > 0 && showDiscountInPDF
   
   return (
     <Document>
@@ -409,9 +442,34 @@ export const InvoicePDF = ({ documentData, shopInfo }) => {
 
         {/* Total */}
         <View style={styles.totalSection}>
-          <Text style={styles.totalLabel}>TOTAL À PAYER (KMF)</Text>
-          <Text style={styles.totalAmount}>{finalAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')}</Text>
-          {showCalculatedAmount && finalAmount !== calculatedAmount && (
+          {hasDiscount ? (
+            <View>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
+                <Text style={[styles.totalLabel, { fontSize: 10 }]}>SOUS-TOTAL</Text>
+                <Text style={[styles.totalAmount, { fontSize: 12 }]}>{calculatedAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')}</Text>
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
+                <Text style={[styles.totalLabel, { fontSize: 10 }]}>
+                  REMISE ({documentData.discountType === 'percentage' ? `${documentData.discountValue}%` : 'Montant fixe'})
+                </Text>
+                <Text style={[styles.totalAmount, { fontSize: 12, color: '#DC2626' }]}>
+                  -{discountAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')}
+                </Text>
+              </View>
+              <View style={{ borderTopWidth: 1, borderTopColor: '#000000', paddingTop: 5, marginTop: 5 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                  <Text style={styles.totalLabel}>TOTAL À PAYER (KMF)</Text>
+                  <Text style={styles.totalAmount}>{finalAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')}</Text>
+                </View>
+              </View>
+            </View>
+          ) : (
+            <View>
+              <Text style={styles.totalLabel}>TOTAL À PAYER (KMF)</Text>
+              <Text style={styles.totalAmount}>{finalAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')}</Text>
+            </View>
+          )}
+          {showCalculatedAmount && finalAmount !== calculatedAmount && !hasDiscount && (
             <Text style={[styles.totalAmount, { fontSize: 12, color: '#666666', marginTop: 5 }]}>
               (Calculé: {calculatedAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')} KMF)
             </Text>

@@ -30,7 +30,11 @@ export default function QuotesInvoicesIntegrated() {
     totalAmount: 0,
     customAmount: 0,
     showCalculatedAmount: true,
-    editableDate: new Date().toISOString().split('T')[0]
+    editableDate: new Date().toISOString().split('T')[0],
+    discountType: 'percentage', // 'percentage' or 'fixed'
+    discountValue: 0,
+    discountAmount: 0,
+    showDiscountInPDF: true
   })
   const [items, setItems] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
@@ -199,7 +203,11 @@ export default function QuotesInvoicesIntegrated() {
       totalAmount: 0,
       customAmount: 0,
       showCalculatedAmount: true,
-      editableDate: new Date().toISOString().split('T')[0]
+      editableDate: new Date().toISOString().split('T')[0],
+      discountType: 'percentage',
+      discountValue: 0,
+      discountAmount: 0,
+      showDiscountInPDF: true
     })
   }
 
@@ -214,7 +222,11 @@ export default function QuotesInvoicesIntegrated() {
       totalAmount: 0,
       customAmount: 0,
       showCalculatedAmount: true,
-      editableDate: new Date().toISOString().split('T')[0]
+      editableDate: new Date().toISOString().split('T')[0],
+      discountType: 'percentage',
+      discountValue: 0,
+      discountAmount: 0,
+      showDiscountInPDF: true
     })
   }
 
@@ -291,7 +303,17 @@ export default function QuotesInvoicesIntegrated() {
     setIsLoading(true)
     try {
       const calculatedTotal = wizardData.selectedItems.reduce((sum, item) => sum + item.totalPrice, 0)
-      const finalAmount = wizardData.customAmount > 0 ? wizardData.customAmount : calculatedTotal
+      
+      // Calculer la remise
+      let discountAmount = 0
+      if (wizardData.discountType === 'percentage' && wizardData.discountValue > 0) {
+        discountAmount = (calculatedTotal * wizardData.discountValue) / 100
+      } else if (wizardData.discountType === 'fixed' && wizardData.discountValue > 0) {
+        discountAmount = wizardData.discountValue
+      }
+      
+      const subtotalAfterDiscount = calculatedTotal - discountAmount
+      const finalAmount = wizardData.customAmount > 0 ? wizardData.customAmount : subtotalAfterDiscount
       
       // Générer le numéro avec le nouveau système (incrémente le compteur)
       const documentNumber = await generateDocumentNumber(wizardType)
@@ -305,6 +327,11 @@ export default function QuotesInvoicesIntegrated() {
         calculatedAmount: calculatedTotal,
         customAmount: wizardData.customAmount,
         showCalculatedAmount: wizardData.showCalculatedAmount,
+        discountType: wizardData.discountType,
+        discountValue: wizardData.discountValue,
+        discountAmount: discountAmount,
+        subtotalAfterDiscount: subtotalAfterDiscount,
+        showDiscountInPDF: wizardData.showDiscountInPDF,
         date: wizardData.editableDate,
         userId: userProfile.uid,
         shopId: userProfile.shopId,
@@ -353,6 +380,12 @@ export default function QuotesInvoicesIntegrated() {
           setCustomAmount={(customAmount) => setWizardData(prev => ({ ...prev, customAmount }))}
           showCalculatedAmount={wizardData.showCalculatedAmount}
           setShowCalculatedAmount={(showCalculatedAmount) => setWizardData(prev => ({ ...prev, showCalculatedAmount }))}
+          discountType={wizardData.discountType}
+          setDiscountType={(discountType) => setWizardData(prev => ({ ...prev, discountType }))}
+          discountValue={wizardData.discountValue}
+          setDiscountValue={(discountValue) => setWizardData(prev => ({ ...prev, discountValue }))}
+          showDiscountInPDF={wizardData.showDiscountInPDF}
+          setShowDiscountInPDF={(showDiscountInPDF) => setWizardData(prev => ({ ...prev, showDiscountInPDF }))}
         />
       case 4:
         return <PreviewStep 
@@ -362,6 +395,9 @@ export default function QuotesInvoicesIntegrated() {
           calculatedAmount={wizardData.selectedItems.reduce((sum, item) => sum + item.totalPrice, 0)}
           customAmount={wizardData.customAmount}
           showCalculatedAmount={wizardData.showCalculatedAmount}
+          discountType={wizardData.discountType}
+          discountValue={wizardData.discountValue}
+          showDiscountInPDF={wizardData.showDiscountInPDF}
           date={wizardData.editableDate}
           isQuote={wizardType === 'quote'}
           shopInfo={shopInfo}
@@ -1013,7 +1049,7 @@ function ArticleSelectionStep({ items, selectedItems, onItemSelect, searchTerm, 
   )
 }
 
-function PricingStep({ selectedItems, onItemChange, onRemoveItem, pricingMode, setPricingMode, customAmount, setCustomAmount, showCalculatedAmount, setShowCalculatedAmount }) {
+function PricingStep({ selectedItems, onItemChange, onRemoveItem, pricingMode, setPricingMode, customAmount, setCustomAmount, showCalculatedAmount, setShowCalculatedAmount, discountType, setDiscountType, discountValue, setDiscountValue, showDiscountInPDF, setShowDiscountInPDF }) {
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
@@ -1090,6 +1126,78 @@ function PricingStep({ selectedItems, onItemChange, onRemoveItem, pricingMode, s
               </div>
             </div>
 
+            {/* Section Remise */}
+            <div className="mt-6 p-6 bg-yellow-50 rounded-lg border border-yellow-200">
+              <h5 className="text-lg font-semibold text-gray-900 mb-4">Remise</h5>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Type de remise
+                  </label>
+                  <select
+                    value={discountType}
+                    onChange={(e) => setDiscountType(e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="percentage">Pourcentage (%)</option>
+                    <option value="fixed">Montant fixe (KMF)</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {discountType === 'percentage' ? 'Pourcentage de remise' : 'Montant de remise (KMF)'}
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    step={discountType === 'percentage' ? '0.01' : '1'}
+                    max={discountType === 'percentage' ? '100' : undefined}
+                    value={discountValue === 0 ? '' : discountValue}
+                    onChange={(e) => setDiscountValue(e.target.value === '' ? 0 : parseFloat(e.target.value) || 0)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder={discountType === 'percentage' ? 'Ex: 10' : 'Ex: 5000'}
+                  />
+                </div>
+              </div>
+              
+              {discountValue > 0 && (
+                <div className="mt-4 p-3 bg-white rounded-lg border border-yellow-300">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-600">Sous-total:</span>
+                      <span className="text-sm font-medium">{selectedItems.reduce((sum, item) => sum + item.totalPrice, 0).toLocaleString('fr-FR')} KMF</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-600">
+                        Remise ({discountType === 'percentage' ? `${discountValue}%` : 'Montant fixe'}):
+                      </span>
+                      <span className="text-sm font-medium text-red-600">
+                        -{discountType === 'percentage' 
+                          ? ((selectedItems.reduce((sum, item) => sum + item.totalPrice, 0) * discountValue) / 100).toLocaleString('fr-FR')
+                          : discountValue.toLocaleString('fr-FR')
+                        } KMF
+                      </span>
+                    </div>
+                    <div className="border-t border-gray-200 pt-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-lg font-semibold text-gray-900">Total après remise:</span>
+                        <span className="text-xl font-bold text-green-600">
+                          {(selectedItems.reduce((sum, item) => sum + item.totalPrice, 0) - 
+                            (discountType === 'percentage' 
+                              ? (selectedItems.reduce((sum, item) => sum + item.totalPrice, 0) * discountValue) / 100
+                              : discountValue
+                            )
+                          ).toLocaleString('fr-FR')} KMF
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Section Montant Personnalisé */}
             <div className="mt-6 p-6 bg-blue-50 rounded-lg border border-blue-200">
               <h5 className="text-lg font-semibold text-gray-900 mb-4">Montant Personnalisé</h5>
@@ -1125,6 +1233,27 @@ function PricingStep({ selectedItems, onItemChange, onRemoveItem, pricingMode, s
                 </div>
               </div>
               
+              {/* Option pour afficher la remise dans le PDF */}
+              {discountValue > 0 && (
+                <div className="mt-4 p-4 bg-orange-50 rounded-lg border border-orange-200">
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={showDiscountInPDF}
+                      onChange={(e) => setShowDiscountInPDF(e.target.checked)}
+                      className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
+                    />
+                    <span className="ml-2 text-sm text-gray-700">
+                      Afficher la remise dans le PDF (décoché = montant final seulement)
+                    </span>
+                  </label>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Si décoché, seul le montant final sera affiché dans le PDF
+                  </p>
+                </div>
+              )}
+              </div>
+              
               {customAmount > 0 && (
                 <div className="mt-4 p-3 bg-white rounded-lg border border-blue-300">
                   <div className="flex items-center justify-between">
@@ -1148,7 +1277,7 @@ function PricingStep({ selectedItems, onItemChange, onRemoveItem, pricingMode, s
   )
 }
 
-function PreviewStep({ clientInfo, selectedItems, totalAmount, calculatedAmount, customAmount, showCalculatedAmount, date, isQuote, shopInfo }) {
+function PreviewStep({ clientInfo, selectedItems, totalAmount, calculatedAmount, customAmount, showCalculatedAmount, discountType, discountValue, showDiscountInPDF, date, isQuote, shopInfo }) {
   const [pdfUrl, setPdfUrl] = useState(null)
   const [isGenerating, setIsGenerating] = useState(false)
 
@@ -1158,15 +1287,31 @@ function PreviewStep({ clientInfo, selectedItems, totalAmount, calculatedAmount,
       // Générer le numéro avec le nouveau système
       const documentNumber = await generateDocumentNumber(isQuote ? 'quote' : 'invoice')
       
+      // Calculer la remise pour l'aperçu
+      let discountAmount = 0
+      if (discountType === 'percentage' && discountValue > 0) {
+        discountAmount = (calculatedAmount * discountValue) / 100
+      } else if (discountType === 'fixed' && discountValue > 0) {
+        discountAmount = discountValue
+      }
+      
+      const subtotalAfterDiscount = calculatedAmount - discountAmount
+      const finalAmount = customAmount > 0 ? customAmount : subtotalAfterDiscount
+      
       const documentData = {
         type: isQuote ? 'quote' : 'invoice',
         number: documentNumber,
         clientInfo,
         selectedItems: selectedItems,
-        totalAmount,
+        totalAmount: finalAmount,
         calculatedAmount,
         customAmount,
         showCalculatedAmount,
+        discountType,
+        discountValue,
+        discountAmount,
+        subtotalAfterDiscount,
+        showDiscountInPDF,
         date
       }
       
@@ -1193,12 +1338,31 @@ function PreviewStep({ clientInfo, selectedItems, totalAmount, calculatedAmount,
     // Prévisualiser le numéro SANS l'incrémenter
     const documentNumber = await previewDocumentNumber(isQuote ? 'quote' : 'invoice')
     
+    // Calculer la remise pour le téléchargement
+    let discountAmount = 0
+    if (discountType === 'percentage' && discountValue > 0) {
+      discountAmount = (calculatedAmount * discountValue) / 100
+    } else if (discountType === 'fixed' && discountValue > 0) {
+      discountAmount = discountValue
+    }
+    
+    const subtotalAfterDiscount = calculatedAmount - discountAmount
+    const finalAmount = customAmount > 0 ? customAmount : subtotalAfterDiscount
+    
     const documentData = {
       type: isQuote ? 'quote' : 'invoice',
       number: documentNumber,
       clientInfo,
       selectedItems: selectedItems,
-      totalAmount,
+      totalAmount: finalAmount,
+      calculatedAmount,
+      customAmount,
+      showCalculatedAmount,
+      discountType,
+      discountValue,
+      discountAmount,
+      subtotalAfterDiscount,
+      showDiscountInPDF,
       date
     }
     
