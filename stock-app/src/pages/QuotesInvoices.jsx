@@ -1248,7 +1248,7 @@ function PricingStep({ selectedItems, onItemChange, onRemoveItem, pricingMode, s
                     }
                   }}>
                     <div className="flex items-center justify-between mb-2">
-                      <h6 className="text-sm font-semibold text-gray-900">🔥 Remise</h6>
+                      <h6 className="text-sm font-semibold text-gray-900">Remise</h6>
                       <div className={`w-4 h-4 rounded-full border-2 ${
                         discountValue > 0 && customAmount === 0 
                           ? 'border-orange-500 bg-orange-500' 
@@ -1331,7 +1331,7 @@ function PricingStep({ selectedItems, onItemChange, onRemoveItem, pricingMode, s
                     }
                   }}>
                     <div className="flex items-center justify-between mb-2">
-                      <h6 className="text-sm font-semibold text-gray-900">💙 Montant Personnalisé</h6>
+                      <h6 className="text-sm font-semibold text-gray-900">Montant Personnalisé</h6>
                       <div className={`w-4 h-4 rounded-full border-2 ${
                         customAmount > 0 
                           ? 'border-blue-500 bg-blue-500' 
