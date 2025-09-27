@@ -7,6 +7,7 @@ import Sidebar from '../components/Sidebar'
 import EditItemModal from '../components/EditItemModal'
 import AddItemModal from '../components/AddItemModal'
 import CategoryManager from '../components/CategoryManager'
+import SearchBar from '../components/SearchBar'
 
 export default function MyShop() {
   const [shopInfo, setShopInfo] = useState(null)
@@ -20,6 +21,7 @@ export default function MyShop() {
   const [sortField, setSortField] = useState('name')
   const [sortDirection, setSortDirection] = useState('asc')
   const [filterStatus, setFilterStatus] = useState('all')
+  const [searchTerm, setSearchTerm] = useState('')
   const { userProfile, logout } = useAuth()
   const { sidebarWidth } = useSidebar()
 
@@ -125,9 +127,22 @@ export default function MyShop() {
 
   const filteredAndSortedItems = items
     .filter(item => {
-      if (filterStatus === 'all') return true
-      const status = getStockStatus(item.quantity, item.minThreshold)
-      return status === filterStatus
+      // Filtrage par statut de stock
+      let statusMatch = true
+      if (filterStatus !== 'all') {
+        const status = getStockStatus(item.quantity, item.minThreshold)
+        statusMatch = status === filterStatus
+      }
+
+      // Filtrage par terme de recherche
+      let searchMatch = true
+      if (searchTerm.trim()) {
+        searchMatch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                     (item.description && item.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                     (item.category && item.category.toLowerCase().includes(searchTerm.toLowerCase()))
+      }
+
+      return statusMatch && searchMatch
     })
     .sort((a, b) => {
       let aVal = a[sortField]
@@ -336,20 +351,66 @@ export default function MyShop() {
               <div className="p-6 border-b border-gray-200">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <h2 className="text-xl font-semibold text-gray-900">Articles du Magasin</h2>
-                  <div className="flex items-center space-x-2">
-                    <label className="text-sm font-medium text-gray-700">Filtrer:</label>
-                    <select
-                      value={filterStatus}
-                      onChange={(e) => setFilterStatus(e.target.value)}
-                      className="border border-gray-300 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                    >
-                      <option value="all">Tous</option>
-                      <option value="good">En stock</option>
-                      <option value="low">Stock faible</option>
-                      <option value="out">Rupture</option>
-                    </select>
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                    {/* Barre de recherche */}
+                    <div className="relative w-full sm:w-80">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                      </div>
+                      <input
+                        type="text"
+                        className="block w-full pl-9 pr-8 py-2 border border-gray-300 rounded-lg text-sm bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200"
+                        placeholder="Rechercher un article..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                      />
+                      {searchTerm && (
+                        <button
+                          onClick={() => setSearchTerm('')}
+                          className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                        >
+                          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      )}
+                    </div>
+                    
+                    {/* Filtre de statut */}
+                    <div className="flex items-center space-x-2">
+                      <label className="text-sm font-medium text-gray-700">Filtrer:</label>
+                      <select
+                        value={filterStatus}
+                        onChange={(e) => setFilterStatus(e.target.value)}
+                        className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                      >
+                        <option value="all">Tous</option>
+                        <option value="good">En stock</option>
+                        <option value="low">Stock faible</option>
+                        <option value="out">Rupture</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
+                
+                {/* Statistiques de recherche */}
+                {searchTerm && (
+                  <div className="mt-4 flex items-center justify-between">
+                    <div className="flex items-center space-x-4 text-sm text-gray-600">
+                      <span>
+                        {filteredAndSortedItems.length} article(s) trouvé(s) pour "{searchTerm}"
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => setSearchTerm('')}
+                      className="text-teal-600 hover:text-teal-800 text-sm font-medium"
+                    >
+                      Effacer la recherche
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Table */}
@@ -420,11 +481,21 @@ export default function MyShop() {
                             </svg>
                             <h3 className="mt-2 text-sm font-medium text-gray-900">Aucun article trouvé</h3>
                             <p className="mt-1 text-sm text-gray-500">
-                              {filterStatus === 'all'
+                              {searchTerm
+                                ? `Aucun article ne correspond à "${searchTerm}".`
+                                : filterStatus === 'all'
                                 ? 'Commencez par ajouter des articles à votre magasin.'
                                 : 'Aucun article ne correspond aux filtres sélectionnés.'
                               }
                             </p>
+                            {searchTerm && (
+                              <button
+                                onClick={() => setSearchTerm('')}
+                                className="mt-2 text-teal-600 hover:text-teal-800 text-sm font-medium"
+                              >
+                                Effacer la recherche
+                              </button>
+                            )}
                           </div>
                         </td>
                       </tr>
