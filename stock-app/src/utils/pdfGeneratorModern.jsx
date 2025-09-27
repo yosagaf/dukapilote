@@ -326,7 +326,7 @@ export const QuotePDF = ({ documentData, shopInfo }) => {
                 <Text style={[styles.totalLabel, { fontSize: 10 }]}>
                   REMISE ({documentData.discountType === 'percentage' ? `${documentData.discountValue}%` : 'Montant fixe'})
                 </Text>
-                <Text style={[styles.totalAmount, { fontSize: 12, color: '#DC2626' }]}>
+                <Text style={[styles.totalAmount, { fontSize: 12, color: '#000000' }]}>
                   -{discountAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')}
                 </Text>
               </View>
@@ -476,7 +476,7 @@ export const InvoicePDF = ({ documentData, shopInfo }) => {
                 <Text style={[styles.totalLabel, { fontSize: 10 }]}>
                   REMISE ({documentData.discountType === 'percentage' ? `${documentData.discountValue}%` : 'Montant fixe'})
                 </Text>
-                <Text style={[styles.totalAmount, { fontSize: 12, color: '#DC2626' }]}>
+                <Text style={[styles.totalAmount, { fontSize: 12, color: '#000000' }]}>
                   -{discountAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')}
                 </Text>
               </View>
