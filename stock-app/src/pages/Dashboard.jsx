@@ -260,7 +260,7 @@ export default function Dashboard() {
                   </div>
                   <div className="text-left">
                     <h3 className="font-semibold text-lg">Inventaire</h3>
-                    <p className="text-teal-100 text-sm">Gérer les stocks</p>
+                    <p className="text-teal-100 text-sm">Gérer les stocks du magasin</p>
                   </div>
                 </div>
               </button>
@@ -451,7 +451,7 @@ export default function Dashboard() {
                 </div>
                 <div className="text-left">
                   <h3 className="font-semibold text-lg">Ajouter Article</h3>
-                  <p className="text-teal-100 text-sm">Nouvel article au stock</p>
+                  <p className="text-teal-100 text-sm">Nouvel article au magasin</p>
                 </div>
               </div>
             </button>
