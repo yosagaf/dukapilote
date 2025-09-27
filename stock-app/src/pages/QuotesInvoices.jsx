@@ -1219,123 +1219,203 @@ function PricingStep({ selectedItems, onItemChange, onRemoveItem, pricingMode, s
               )}
             </div>
 
-            {/* Section Montant Personnalisé */}
-            <div className="mt-6 p-6 bg-blue-50 rounded-lg border border-blue-200">
-              <h5 className="text-lg font-semibold text-gray-900 mb-4">Montant Personnalisé</h5>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Montant personnalisé (KMF)
-                  </label>
-                  <input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    value={customAmount === 0 ? '' : customAmount}
-                    onChange={(e) => setCustomAmount(e.target.value === '' ? 0 : parseFloat(e.target.value) || 0)}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Saisissez le montant souhaité"
-                  />
+            {/* Section Configuration des Prix et Remises */}
+            <div className="mt-6 space-y-6">
+              {/* Configuration de la Remise */}
+              <div className="p-6 bg-gradient-to-r from-orange-50 to-red-50 rounded-lg border border-orange-200">
+                <div className="flex items-center justify-between mb-4">
+                  <h5 className="text-lg font-semibold text-gray-900">Configuration de la Remise</h5>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm text-gray-500">Type:</span>
+                    <select
+                      value={discountType}
+                      onChange={(e) => setDiscountType(e.target.value)}
+                      className="text-sm border border-gray-300 rounded px-3 py-1"
+                    >
+                      <option value="percentage">Pourcentage</option>
+                      <option value="fixed">Montant fixe</option>
+                    </select>
+                  </div>
                 </div>
                 
-                <div className="flex items-center space-x-3">
-                  <label className="flex items-center">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {discountType === 'percentage' ? 'Pourcentage de remise' : 'Montant de remise (KMF)'}
+                    </label>
+                    <input
+                      type="number"
+                      value={discountValue === 0 ? '' : discountValue}
+                      onChange={(e) => setDiscountValue(e.target.value === '' ? 0 : parseFloat(e.target.value) || 0)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                      placeholder={discountType === 'percentage' ? 'Ex: 10' : 'Ex: 5000'}
+                      min="0"
+                      step={discountType === 'percentage' ? '0.1' : '1'}
+                    />
+                  </div>
+                  
+                  <div className="flex items-end">
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={showDiscountInPDF}
+                        onChange={(e) => setShowDiscountInPDF(e.target.checked)}
+                        className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
+                      />
+                      <span className="ml-2 text-sm text-gray-700">
+                        Afficher la remise dans le PDF
+                      </span>
+                    </label>
+                  </div>
+                </div>
+                
+                {discountValue > 0 && (
+                  <div className="mt-4 p-4 bg-white rounded border border-orange-200">
+                    <div className="grid grid-cols-3 gap-4 text-sm">
+                      <div className="text-center">
+                        <div className="text-gray-600 text-xs mb-1">Total net</div>
+                        <div className="font-semibold text-gray-900">
+                          {calculatedTotal.toLocaleString('fr-FR')} KMF
+                        </div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-gray-600 text-xs mb-1">Remise</div>
+                        <div className="font-semibold text-red-600">
+                          -{discountAmount.toLocaleString('fr-FR')} KMF
+                        </div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-gray-600 text-xs mb-1">Total à payer</div>
+                        <div className="font-bold text-lg text-green-600">
+                          {subtotalAfterDiscount.toLocaleString('fr-FR')} KMF
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Configuration du Montant Personnalisé */}
+              <div className="p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+                <div className="flex items-center justify-between mb-4">
+                  <h5 className="text-lg font-semibold text-gray-900">Montant Personnalisé</h5>
+                  <div className="flex items-center space-x-2">
                     <input
                       type="checkbox"
-                      checked={showCalculatedAmount}
-                      onChange={(e) => setShowCalculatedAmount(e.target.checked)}
+                      checked={customAmount > 0}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setCustomAmount(subtotalAfterDiscount)
+                        } else {
+                          setCustomAmount(0)
+                        }
+                      }}
                       className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                     />
-                    <span className="ml-2 text-sm text-gray-700">
-                      Afficher le montant calculé dans le PDF
-                    </span>
-                  </label>
+                    <span className="text-sm text-gray-700">Utiliser un montant personnalisé</span>
+                  </div>
                 </div>
-              </div>
-              
-              {/* Options d'affichage dans le PDF */}
-              <div className="mt-4 p-4 bg-purple-50 rounded-lg border border-purple-200">
-                <h6 className="text-sm font-semibold text-gray-900 mb-3">Options d'affichage dans le PDF</h6>
                 
-                <div className="space-y-3">
-                  {/* Option pour afficher la remise */}
-                  {discountValue > 0 && (
-                    <div className="space-y-2">
+                {customAmount > 0 && (
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Montant personnalisé (KMF)
+                      </label>
+                      <input
+                        type="number"
+                        value={customAmount === 0 ? '' : customAmount}
+                        onChange={(e) => setCustomAmount(e.target.value === '' ? 0 : parseFloat(e.target.value) || 0)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Ex: 15000"
+                        min="0"
+                        step="1"
+                      />
+                    </div>
+                    
+                    <div className="flex items-center space-x-4">
                       <label className="flex items-center">
                         <input
                           type="checkbox"
-                          checked={showDiscountInPDF}
-                          onChange={(e) => setShowDiscountInPDF(e.target.checked)}
-                          className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
+                          checked={showCalculatedAmount}
+                          onChange={(e) => setShowCalculatedAmount(e.target.checked)}
+                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                         />
                         <span className="ml-2 text-sm text-gray-700">
-                          Afficher la remise dans le PDF
+                          Afficher le montant calculé dans le PDF
                         </span>
                       </label>
-                      {showDiscountInPDF && (
-                        <label className="flex items-center ml-6">
-                          <input
-                            type="checkbox"
-                            checked={showDiscountDetailsInPDF}
-                            onChange={(e) => setShowDiscountDetailsInPDF(e.target.checked)}
-                            className="h-4 w-4 text-orange-500 focus:ring-orange-400 border-gray-300 rounded"
-                          />
-                          <span className="ml-2 text-sm text-gray-600">
-                            Afficher les détails de la remise (total net, remise, total final)
-                          </span>
-                        </label>
-                      )}
                     </div>
-                  )}
+                    
+                    <div className="p-4 bg-white rounded border border-blue-200">
+                      <div className="text-center">
+                        <div className="text-gray-600 text-sm mb-1">Montant final</div>
+                        <div className="font-bold text-2xl text-blue-600">
+                          {customAmount.toLocaleString('fr-FR')} KMF
+                        </div>
+                        {showCalculatedAmount && (
+                          <div className="text-xs text-gray-500 mt-1">
+                            (Calculé: {subtotalAfterDiscount.toLocaleString('fr-FR')} KMF)
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Options d'Affichage PDF */}
+              <div className="p-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
+                <h5 className="text-lg font-semibold text-gray-900 mb-4">Options d'affichage dans le PDF</h5>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={showNetAmountInPDF}
+                        onChange={(e) => setShowNetAmountInPDF(e.target.checked)}
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      />
+                      <span className="ml-2 text-sm text-gray-700">
+                        Afficher le total net
+                      </span>
+                    </label>
+                    
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={showFinalAmountInPDF}
+                        onChange={(e) => setShowFinalAmountInPDF(e.target.checked)}
+                        className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                      />
+                      <span className="ml-2 text-sm text-gray-700">
+                        Afficher le total à payer
+                      </span>
+                    </label>
+                  </div>
                   
-                  {/* Option pour afficher le total net */}
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={showNetAmountInPDF}
-                      onChange={(e) => setShowNetAmountInPDF(e.target.checked)}
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                    />
-                    <span className="ml-2 text-sm text-gray-700">
-                      Afficher le total net dans le PDF
-                    </span>
-                  </label>
-                  
-                  {/* Option pour afficher le total à payer */}
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={showFinalAmountInPDF}
-                      onChange={(e) => setShowFinalAmountInPDF(e.target.checked)}
-                      className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
-                    />
-                    <span className="ml-2 text-sm text-gray-700">
-                      Afficher le total à payer dans le PDF
-                    </span>
-                  </label>
+                  <div className="space-y-4">
+                    {discountValue > 0 && showDiscountInPDF && (
+                      <label className="flex items-center">
+                        <input
+                          type="checkbox"
+                          checked={showDiscountDetailsInPDF}
+                          onChange={(e) => setShowDiscountDetailsInPDF(e.target.checked)}
+                          className="h-4 w-4 text-orange-500 focus:ring-orange-400 border-gray-300 rounded"
+                        />
+                        <span className="ml-2 text-sm text-gray-700">
+                          Afficher les détails de la remise
+                        </span>
+                      </label>
+                    )}
+                  </div>
                 </div>
                 
-                <p className="text-xs text-gray-500 mt-2">
+                <p className="text-sm text-gray-500 mt-4">
                   Configurez exactement ce que vous voulez afficher dans le PDF
                 </p>
               </div>
-              
-              {customAmount > 0 && (
-                <div className="mt-4 p-3 bg-white rounded-lg border border-blue-300">
-                  <div className="flex items-center justify-between">
-                    <span className="text-lg font-semibold text-gray-900">Montant final:</span>
-                    <span className="text-2xl font-bold text-blue-600">
-                      {customAmount.toLocaleString('fr-FR')} KMF
-                    </span>
-                  </div>
-                  {showCalculatedAmount && (
-                    <div className="mt-2 text-sm text-gray-600">
-                      (Total net: {selectedItems.reduce((sum, item) => sum + item.totalPrice, 0).toLocaleString('fr-FR')} KMF)
-                    </div>
-                  )}
-                </div>
-              )}
             </div>
           </div>
         )}
