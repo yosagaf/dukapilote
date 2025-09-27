@@ -1211,8 +1211,8 @@ function PricingStep({ selectedItems, onItemChange, onRemoveItem, pricingMode, s
                     type="number"
                     min="0"
                     step="0.01"
-                    value={customAmount}
-                    onChange={(e) => setCustomAmount(parseFloat(e.target.value) || 0)}
+                    value={customAmount === 0 ? '' : customAmount}
+                    onChange={(e) => setCustomAmount(e.target.value === '' ? 0 : parseFloat(e.target.value) || 0)}
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Saisissez le montant souhaité"
                   />
