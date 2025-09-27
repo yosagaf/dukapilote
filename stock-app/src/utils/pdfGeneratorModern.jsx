@@ -327,20 +327,20 @@ export const QuotePDF = ({ documentData, shopInfo }) => {
               </View>
               <View style={{ borderTopWidth: 1, borderTopColor: '#000000', paddingTop: 5, marginTop: 5 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                  <Text style={styles.totalLabel}>TOTAL (KMF)</Text>
+                  <Text style={styles.totalLabel}>TOTAL À PAYER (KMF)</Text>
                   <Text style={styles.totalAmount}>{finalAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')}</Text>
                 </View>
               </View>
             </View>
           ) : (
             <View>
-              <Text style={styles.totalLabel}>TOTAL (KMF)</Text>
+              <Text style={styles.totalLabel}>TOTAL À PAYER (KMF)</Text>
               <Text style={styles.totalAmount}>{finalAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')}</Text>
             </View>
           )}
           {showCalculatedAmount && finalAmount !== calculatedAmount && !hasDiscount && (
             <Text style={[styles.totalAmount, { fontSize: 12, color: '#666666', marginTop: 5 }]}>
-              (Calculé: {calculatedAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')} KMF)
+              (Total net: {calculatedAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')} KMF)
             </Text>
           )}
         </View>
@@ -471,7 +471,7 @@ export const InvoicePDF = ({ documentData, shopInfo }) => {
           )}
           {showCalculatedAmount && finalAmount !== calculatedAmount && !hasDiscount && (
             <Text style={[styles.totalAmount, { fontSize: 12, color: '#666666', marginTop: 5 }]}>
-              (Calculé: {calculatedAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')} KMF)
+              (Total net: {calculatedAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')} KMF)
             </Text>
           )}
         </View>
