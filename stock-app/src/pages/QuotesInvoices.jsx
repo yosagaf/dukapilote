@@ -1119,7 +1119,7 @@ function PricingStep({ selectedItems, onItemChange, onRemoveItem, pricingMode, s
             
             <div className="mt-6 p-4 bg-green-50 rounded-lg">
               <div className="flex items-center justify-between">
-                <span className="text-lg font-semibold text-gray-900">Total calculé:</span>
+                <span className="text-lg font-semibold text-gray-900">Total net:</span>
                 <span className="text-2xl font-bold text-green-600">
                   {selectedItems.reduce((sum, item) => sum + item.totalPrice, 0).toLocaleString('fr-FR')} KMF
                 </span>
@@ -1182,7 +1182,7 @@ function PricingStep({ selectedItems, onItemChange, onRemoveItem, pricingMode, s
                     </div>
                     <div className="border-t border-gray-200 pt-2">
                       <div className="flex items-center justify-between">
-                        <span className="text-lg font-semibold text-gray-900">Total après remise:</span>
+                        <span className="text-lg font-semibold text-gray-900">Total à payer:</span>
                         <span className="text-xl font-bold text-green-600">
                           {(selectedItems.reduce((sum, item) => sum + item.totalPrice, 0) - 
                             (discountType === 'percentage' 
@@ -1263,7 +1263,7 @@ function PricingStep({ selectedItems, onItemChange, onRemoveItem, pricingMode, s
                   </div>
                   {showCalculatedAmount && (
                     <div className="mt-2 text-sm text-gray-600">
-                      (Montant calculé: {selectedItems.reduce((sum, item) => sum + item.totalPrice, 0).toLocaleString('fr-FR')} KMF)
+                      (Total net: {selectedItems.reduce((sum, item) => sum + item.totalPrice, 0).toLocaleString('fr-FR')} KMF)
                     </div>
                   )}
                 </div>

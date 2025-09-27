@@ -314,7 +314,7 @@ export const QuotePDF = ({ documentData, shopInfo }) => {
           {hasDiscount ? (
             <View>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
-                <Text style={[styles.totalLabel, { fontSize: 10 }]}>SOUS-TOTAL</Text>
+                <Text style={[styles.totalLabel, { fontSize: 10 }]}>TOTAL NET</Text>
                 <Text style={[styles.totalAmount, { fontSize: 12 }]}>{calculatedAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')}</Text>
               </View>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
@@ -445,7 +445,7 @@ export const InvoicePDF = ({ documentData, shopInfo }) => {
           {hasDiscount ? (
             <View>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
-                <Text style={[styles.totalLabel, { fontSize: 10 }]}>SOUS-TOTAL</Text>
+                <Text style={[styles.totalLabel, { fontSize: 10 }]}>TOTAL NET</Text>
                 <Text style={[styles.totalAmount, { fontSize: 12 }]}>{calculatedAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')}</Text>
               </View>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
