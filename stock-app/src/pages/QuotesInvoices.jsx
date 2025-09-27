@@ -34,7 +34,9 @@ export default function QuotesInvoicesIntegrated() {
     discountType: 'percentage', // 'percentage' or 'fixed'
     discountValue: 0,
     discountAmount: 0,
-    showDiscountInPDF: true
+    showDiscountInPDF: true,
+    showNetAmountInPDF: true,
+    showFinalAmountInPDF: true
   })
   const [items, setItems] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
@@ -207,7 +209,9 @@ export default function QuotesInvoicesIntegrated() {
       discountType: 'percentage',
       discountValue: 0,
       discountAmount: 0,
-      showDiscountInPDF: true
+      showDiscountInPDF: true,
+      showNetAmountInPDF: true,
+      showFinalAmountInPDF: true
     })
   }
 
@@ -226,7 +230,9 @@ export default function QuotesInvoicesIntegrated() {
       discountType: 'percentage',
       discountValue: 0,
       discountAmount: 0,
-      showDiscountInPDF: true
+      showDiscountInPDF: true,
+      showNetAmountInPDF: true,
+      showFinalAmountInPDF: true
     })
   }
 
@@ -332,6 +338,8 @@ export default function QuotesInvoicesIntegrated() {
         discountAmount: discountAmount,
         subtotalAfterDiscount: subtotalAfterDiscount,
         showDiscountInPDF: wizardData.showDiscountInPDF,
+        showNetAmountInPDF: wizardData.showNetAmountInPDF,
+        showFinalAmountInPDF: wizardData.showFinalAmountInPDF,
         date: wizardData.editableDate,
         userId: userProfile.uid,
         shopId: userProfile.shopId,
@@ -386,6 +394,10 @@ export default function QuotesInvoicesIntegrated() {
           setDiscountValue={(discountValue) => setWizardData(prev => ({ ...prev, discountValue }))}
           showDiscountInPDF={wizardData.showDiscountInPDF}
           setShowDiscountInPDF={(showDiscountInPDF) => setWizardData(prev => ({ ...prev, showDiscountInPDF }))}
+          showNetAmountInPDF={wizardData.showNetAmountInPDF}
+          setShowNetAmountInPDF={(showNetAmountInPDF) => setWizardData(prev => ({ ...prev, showNetAmountInPDF }))}
+          showFinalAmountInPDF={wizardData.showFinalAmountInPDF}
+          setShowFinalAmountInPDF={(showFinalAmountInPDF) => setWizardData(prev => ({ ...prev, showFinalAmountInPDF }))}
         />
       case 4:
         return <PreviewStep 
@@ -398,6 +410,8 @@ export default function QuotesInvoicesIntegrated() {
           discountType={wizardData.discountType}
           discountValue={wizardData.discountValue}
           showDiscountInPDF={wizardData.showDiscountInPDF}
+          showNetAmountInPDF={wizardData.showNetAmountInPDF}
+          showFinalAmountInPDF={wizardData.showFinalAmountInPDF}
           date={wizardData.editableDate}
           isQuote={wizardType === 'quote'}
           shopInfo={shopInfo}
@@ -1049,7 +1063,7 @@ function ArticleSelectionStep({ items, selectedItems, onItemSelect, searchTerm, 
   )
 }
 
-function PricingStep({ selectedItems, onItemChange, onRemoveItem, pricingMode, setPricingMode, customAmount, setCustomAmount, showCalculatedAmount, setShowCalculatedAmount, discountType, setDiscountType, discountValue, setDiscountValue, showDiscountInPDF, setShowDiscountInPDF }) {
+function PricingStep({ selectedItems, onItemChange, onRemoveItem, pricingMode, setPricingMode, customAmount, setCustomAmount, showCalculatedAmount, setShowCalculatedAmount, discountType, setDiscountType, discountValue, setDiscountValue, showDiscountInPDF, setShowDiscountInPDF, showNetAmountInPDF, setShowNetAmountInPDF, showFinalAmountInPDF, setShowFinalAmountInPDF }) {
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
@@ -1233,25 +1247,57 @@ function PricingStep({ selectedItems, onItemChange, onRemoveItem, pricingMode, s
                 </div>
               </div>
               
-              {/* Option pour afficher la remise dans le PDF */}
-              {discountValue > 0 && (
-                <div className="mt-4 p-4 bg-orange-50 rounded-lg border border-orange-200">
+              {/* Options d'affichage dans le PDF */}
+              <div className="mt-4 p-4 bg-purple-50 rounded-lg border border-purple-200">
+                <h6 className="text-sm font-semibold text-gray-900 mb-3">Options d'affichage dans le PDF</h6>
+                
+                <div className="space-y-3">
+                  {/* Option pour afficher la remise */}
+                  {discountValue > 0 && (
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={showDiscountInPDF}
+                        onChange={(e) => setShowDiscountInPDF(e.target.checked)}
+                        className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
+                      />
+                      <span className="ml-2 text-sm text-gray-700">
+                        Afficher la remise dans le PDF
+                      </span>
+                    </label>
+                  )}
+                  
+                  {/* Option pour afficher le total net */}
                   <label className="flex items-center">
                     <input
                       type="checkbox"
-                      checked={showDiscountInPDF}
-                      onChange={(e) => setShowDiscountInPDF(e.target.checked)}
-                      className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
+                      checked={showNetAmountInPDF}
+                      onChange={(e) => setShowNetAmountInPDF(e.target.checked)}
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                     />
                     <span className="ml-2 text-sm text-gray-700">
-                      Afficher la remise dans le PDF (décoché = montant final seulement)
+                      Afficher le total net dans le PDF
                     </span>
                   </label>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Si décoché, seul le montant final sera affiché dans le PDF
-                  </p>
+                  
+                  {/* Option pour afficher le total à payer */}
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={showFinalAmountInPDF}
+                      onChange={(e) => setShowFinalAmountInPDF(e.target.checked)}
+                      className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                    />
+                    <span className="ml-2 text-sm text-gray-700">
+                      Afficher le total à payer dans le PDF
+                    </span>
+                  </label>
                 </div>
-              )}
+                
+                <p className="text-xs text-gray-500 mt-2">
+                  Configurez exactement ce que vous voulez afficher dans le PDF
+                </p>
+              </div>
               
               {customAmount > 0 && (
                 <div className="mt-4 p-3 bg-white rounded-lg border border-blue-300">
@@ -1276,7 +1322,7 @@ function PricingStep({ selectedItems, onItemChange, onRemoveItem, pricingMode, s
   )
 }
 
-function PreviewStep({ clientInfo, selectedItems, totalAmount, calculatedAmount, customAmount, showCalculatedAmount, discountType, discountValue, showDiscountInPDF, date, isQuote, shopInfo }) {
+function PreviewStep({ clientInfo, selectedItems, totalAmount, calculatedAmount, customAmount, showCalculatedAmount, discountType, discountValue, showDiscountInPDF, showNetAmountInPDF, showFinalAmountInPDF, date, isQuote, shopInfo }) {
   const [pdfUrl, setPdfUrl] = useState(null)
   const [isGenerating, setIsGenerating] = useState(false)
 
@@ -1311,6 +1357,8 @@ function PreviewStep({ clientInfo, selectedItems, totalAmount, calculatedAmount,
         discountAmount,
         subtotalAfterDiscount,
         showDiscountInPDF,
+        showNetAmountInPDF,
+        showFinalAmountInPDF,
         date
       }
       
@@ -1362,6 +1410,8 @@ function PreviewStep({ clientInfo, selectedItems, totalAmount, calculatedAmount,
       discountAmount,
       subtotalAfterDiscount,
       showDiscountInPDF,
+      showNetAmountInPDF,
+      showFinalAmountInPDF,
       date
     }
     
