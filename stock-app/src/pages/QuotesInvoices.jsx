@@ -1333,7 +1333,7 @@ function PricingStep({ selectedItems, onItemChange, onRemoveItem, pricingMode, s
                     {discountValue > 0 && customAmount === 0 && (
                       <div className="text-center">
                         <div className="text-gray-600 text-xs">Remise</div>
-                        <div className="font-semibold text-red-600">
+                        <div className="font-semibold text-gray-900">
                           -{discountAmount.toLocaleString('fr-FR')} KMF
                         </div>
                       </div>
