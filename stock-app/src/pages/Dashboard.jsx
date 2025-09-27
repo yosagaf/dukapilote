@@ -6,6 +6,7 @@ import { db } from '../firebase'
 import ItemCard from '../components/ItemCard'
 import AddItemModal from '../components/AddItemModal'
 import EditItemModal from '../components/EditItemModal'
+import CreditModal from '../components/CreditModal'
 import Sidebar from '../components/Sidebar'
 import TransferHistory from '../components/TransferHistory'
 import SalesDashboard from '../components/SalesDashboard'
@@ -23,6 +24,7 @@ export default function Dashboard() {
   const [showAddModal, setShowAddModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
   const [editingItem, setEditingItem] = useState(null)
+  const [showCreditModal, setShowCreditModal] = useState(false)
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState('dashboard')
   const [salesData, setSalesData] = useState([])
@@ -196,6 +198,11 @@ export default function Dashboard() {
   const closeEditModal = () => {
     setShowEditModal(false)
     setEditingItem(null)
+  }
+
+  const handleCreditCreated = () => {
+    setShowCreditModal(false)
+    // Optionnel : recharger les données si nécessaire
   }
 
   const renderContent = () => {
@@ -457,7 +464,7 @@ export default function Dashboard() {
               </button>
 
             <button
-              onClick={() => window.location.href = '/devis-factures'}
+              onClick={() => setShowCreditModal(true)}
               className="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
             >
               <div className="flex items-center space-x-2">
@@ -467,8 +474,8 @@ export default function Dashboard() {
                   </svg>
                 </div>
                 <div className="text-left">
-                  <h3 className="font-semibold text-base">Nouveau Devis</h3>
-                  <p className="text-orange-100 text-xs">Créer un devis</p>
+                  <h3 className="font-semibold text-base">Nouveau Crédit</h3>
+                  <p className="text-orange-100 text-xs">Créer un crédit client</p>
                 </div>
               </div>
             </button>
@@ -750,6 +757,14 @@ export default function Dashboard() {
         <EditItemModal
           onClose={closeEditModal}
           item={editingItem}
+        />
+      )}
+
+      {showCreditModal && (
+        <CreditModal
+          isOpen={showCreditModal}
+          onClose={() => setShowCreditModal(false)}
+          onSuccess={handleCreditCreated}
         />
       )}
     </div>

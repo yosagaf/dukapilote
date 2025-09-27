@@ -8,7 +8,7 @@ import Button from './common/Button'
 import LoadingSpinner from './common/LoadingSpinner'
 import FormField from './forms/FormField'
 
-export default function CreditModal({ isOpen, onClose, onSuccess }) {
+export default function CreditModal({ isOpen, onClose, onSuccess, duplicateData }) {
   const { userProfile } = useAuth()
   const { sidebarWidth } = useSidebar()
   const [currentStep, setCurrentStep] = useState(1)
@@ -18,7 +18,8 @@ export default function CreditModal({ isOpen, onClose, onSuccess }) {
     customerName: '',
     customerFirstName: '',
     customerPhone: '',
-    customerAddress: ''
+    customerAddress: '',
+    appointmentDate: new Date().toISOString().split('T')[0]
   })
   const [paymentInfo, setPaymentInfo] = useState({
     amount: '',
@@ -29,6 +30,9 @@ export default function CreditModal({ isOpen, onClose, onSuccess }) {
   const [error, setError] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
   const [validationErrors, setValidationErrors] = useState({})
+  const [stockAlerts, setStockAlerts] = useState([])
+  const [showStockAlert, setShowStockAlert] = useState(false)
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
 
   const totalSteps = 4
 
@@ -45,6 +49,34 @@ export default function CreditModal({ isOpen, onClose, onSuccess }) {
     }
   }, [isOpen, userProfile])
 
+  // Pré-remplir les données si c'est une duplication
+  useEffect(() => {
+    if (duplicateData && isOpen) {
+      setClientInfo({
+        customerName: duplicateData.customerName || '',
+        customerFirstName: duplicateData.customerFirstName || '',
+        customerPhone: duplicateData.customerPhone || '',
+        customerAddress: duplicateData.customerAddress || '',
+        appointmentDate: duplicateData.appointmentDate ? 
+          (duplicateData.appointmentDate instanceof Date ? 
+            duplicateData.appointmentDate.toISOString().split('T')[0] : 
+            new Date(duplicateData.appointmentDate).toISOString().split('T')[0]
+          ) : new Date().toISOString().split('T')[0]
+      })
+      
+      // Pré-sélectionner les articles
+      if (duplicateData.items && duplicateData.items.length > 0) {
+        const preSelectedItems = duplicateData.items.map(item => ({
+          id: `duplicate-${Date.now()}-${Math.random()}`,
+          name: item.name,
+          price: item.price,
+          selectedQuantity: item.quantity || 1
+        }))
+        setSelectedItems(preSelectedItems)
+      }
+    }
+  }, [duplicateData, isOpen])
+
   const loadItems = async () => {
     try {
       setLoading(true)
@@ -56,6 +88,7 @@ export default function CreditModal({ isOpen, onClose, onSuccess }) {
           id: doc.id,
           ...doc.data()
         }))
+        console.log('📦 Items loaded in CreditModal:', itemsData)
         setItems(itemsData)
         setLoading(false)
       })
@@ -68,9 +101,47 @@ export default function CreditModal({ isOpen, onClose, onSuccess }) {
     }
   }
 
+  const validateStep = () => {
+    const errors = {}
+    let isValid = true
+
+    if (currentStep === 1) {
+      // Validation des informations client
+      if (!clientInfo.customerName.trim()) {
+        errors.customerName = 'Le nom du client est requis'
+        isValid = false
+      }
+      if (!clientInfo.customerFirstName.trim()) {
+        errors.customerFirstName = 'Le prénom du client est requis'
+        isValid = false
+      }
+      if (!clientInfo.customerAddress.trim()) {
+        errors.customerAddress = 'L\'adresse (village) est requise'
+        isValid = false
+      }
+      if (!clientInfo.appointmentDate) {
+        errors.appointmentDate = 'La date de rendez-vous est requise'
+        isValid = false
+      } else {
+        const selectedDate = new Date(clientInfo.appointmentDate)
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+        if (selectedDate < today) {
+          errors.appointmentDate = 'La date de rendez-vous ne peut pas être antérieure à aujourd\'hui'
+          isValid = false
+        }
+      }
+    }
+
+    setValidationErrors(errors)
+    return isValid
+  }
+
   const handleNext = () => {
-    if (currentStep < totalSteps) {
-      setCurrentStep(currentStep + 1)
+    if (validateStep()) {
+      if (currentStep < totalSteps) {
+        setCurrentStep(currentStep + 1)
+      }
     }
   }
 
@@ -106,39 +177,123 @@ export default function CreditModal({ isOpen, onClose, onSuccess }) {
       setLoading(true)
       setError('')
 
-      const creditData = {
-        customerName: clientInfo.customerName,
-        customerFirstName: clientInfo.customerFirstName,
-        customerPhone: clientInfo.customerPhone,
-        customerAddress: clientInfo.customerAddress,
-        items: selectedItems.map(item => ({
-          name: item.name,
-          quantity: item.selectedQuantity,
-          price: item.price,
-          totalPrice: item.selectedQuantity * item.price
-        })),
-        totalAmount: calculateTotal(),
-        paidAmount: parseFloat(paymentInfo.amount) || 0,
-        remainingAmount: calculateTotal() - (parseFloat(paymentInfo.amount) || 0),
-        status: (parseFloat(paymentInfo.amount) || 0) >= calculateTotal() ? 'completed' : 'pending',
-        shopId: userProfile.shopId,
-        createdAt: new Date(),
-        payments: (parseFloat(paymentInfo.amount) || 0) > 0 ? [{
-          amount: parseFloat(paymentInfo.amount),
-          date: paymentInfo.date,
-          comments: paymentInfo.comments || 'Paiement initial'
-        }] : []
+      // Vérifier le stock avant de créer le crédit
+      const stockWarnings = []
+      const stockErrors = []
+      
+      for (const selectedItem of selectedItems) {
+        const originalItem = items.find(item => item.id === selectedItem.id)
+        
+        console.log('🔍 Debug Stock Check:')
+        console.log('Selected item:', selectedItem)
+        console.log('Original item found:', originalItem)
+        
+        if (originalItem) {
+          const currentStock = originalItem.quantity || 0
+          const requestedQuantity = selectedItem.selectedQuantity
+          
+          console.log(`📊 Stock check - Name: ${selectedItem.name}`)
+          console.log(`📊 Current stock: ${currentStock}`)
+          console.log(`📊 Requested quantity: ${requestedQuantity}`)
+          console.log(`📊 Quantity field value: ${originalItem.quantity}`)
+          console.log(`📊 All item fields:`, Object.keys(originalItem))
+          
+          if (currentStock < requestedQuantity) {
+            if (currentStock === 0) {
+              stockErrors.push({
+                itemName: selectedItem.name,
+                requested: requestedQuantity,
+                available: currentStock,
+                type: 'error'
+              })
+            } else {
+              stockWarnings.push({
+                itemName: selectedItem.name,
+                requested: requestedQuantity,
+                available: currentStock,
+                type: 'warning'
+              })
+            }
+          }
+        } else {
+          console.log(`❌ Original item not found for: ${selectedItem.name}`)
+          console.log('Available items:', items.map(i => ({ id: i.id, name: i.name, quantity: i.quantity })))
+        }
       }
 
-      await CreditStorage.createCredit(creditData)
-      onSuccess()
-      onClose()
+      // S'il y a des erreurs de stock (stock insuffisant), empêcher la création
+      if (stockErrors.length > 0) {
+        setError('Impossible de créer le crédit : stock insuffisant pour certains articles.')
+        setStockAlerts(stockErrors)
+        setShowStockAlert(true)
+        return
+      }
+
+      // S'il y a des avertissements de stock, demander confirmation
+      if (stockWarnings.length > 0) {
+        setStockAlerts(stockWarnings)
+        setShowStockAlert(true)
+        return
+      }
+
+      // Créer le crédit si tout est OK
+      await createCredit()
+      
     } catch (error) {
       console.error('Erreur lors de la création du crédit:', error)
       setError('Erreur lors de la création du crédit')
     } finally {
       setLoading(false)
     }
+  }
+
+  const createCredit = async () => {
+    const creditData = {
+      customerName: clientInfo.customerName,
+      customerFirstName: clientInfo.customerFirstName,
+      customerPhone: clientInfo.customerPhone,
+      customerAddress: clientInfo.customerAddress,
+      appointmentDate: new Date(clientInfo.appointmentDate),
+      items: selectedItems.map(item => ({
+        itemId: item.id,
+        name: item.name,
+        quantity: item.selectedQuantity,
+        price: item.price,
+        totalPrice: item.selectedQuantity * item.price
+      })),
+      totalAmount: calculateTotal(),
+      paidAmount: parseFloat(paymentInfo.amount) || 0,
+      remainingAmount: calculateTotal() - (parseFloat(paymentInfo.amount) || 0),
+      status: (parseFloat(paymentInfo.amount) || 0) >= calculateTotal() ? 'completed' : 'pending',
+      shopId: userProfile.shopId,
+      createdAt: new Date(),
+      payments: (parseFloat(paymentInfo.amount) || 0) > 0 ? [{
+        amount: parseFloat(paymentInfo.amount),
+        date: paymentInfo.date,
+        comments: paymentInfo.comments || 'Paiement initial'
+      }] : []
+    }
+
+    await CreditStorage.createCredit(creditData)
+    setShowSuccessModal(true)
+  }
+
+  const handleConfirmStockAlert = async () => {
+    setShowStockAlert(false)
+    setStockAlerts([])
+    await createCredit()
+  }
+
+  const handleCancelStockAlert = () => {
+    setShowStockAlert(false)
+    setStockAlerts([])
+    setLoading(false)
+  }
+
+  const handleSuccessModalClose = () => {
+    setShowSuccessModal(false)
+    onSuccess()
+    onClose()
   }
 
   const filteredItems = items.filter(item =>
@@ -154,23 +309,23 @@ export default function CreditModal({ isOpen, onClose, onSuccess }) {
         <header className="bg-white shadow-sm border-b border-gray-200">
           <div className="px-6 py-6">
             <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <button
-                  onClick={onClose}
-                  className="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-100 rounded-lg"
-                  title="Retour aux crédits"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                </button>
-                <div>
-                  <h1 className="text-3xl font-bold text-gray-900">Nouveau Crédit</h1>
-                  <p className="text-gray-600 mt-2">
-                    Créez un nouveau crédit client en {totalSteps} étapes
-                  </p>
-                </div>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">Nouveau Crédit</h1>
+                <p className="text-gray-600 mt-2">
+                  Créez un nouveau crédit client en {totalSteps} étapes
+                </p>
               </div>
+              
+              {/* Bouton de fermeture */}
+              <button
+                onClick={onClose}
+                className="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-100 rounded-lg"
+                title="Fermer"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
           </div>
         </header>
@@ -231,20 +386,22 @@ export default function CreditModal({ isOpen, onClose, onSuccess }) {
                   </p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <FormField
-                      label="Nom du client"
+                      label="Nom du client *"
                       type="text"
                       value={clientInfo.customerName}
                       onChange={(e) => setClientInfo({ ...clientInfo, customerName: e.target.value })}
                       required
                       placeholder="Entrez le nom du client"
+                      error={validationErrors.customerName}
                     />
                     <FormField
-                      label="Prénom du client"
+                      label="Prénom du client *"
                       type="text"
                       value={clientInfo.customerFirstName}
                       onChange={(e) => setClientInfo({ ...clientInfo, customerFirstName: e.target.value })}
                       required
                       placeholder="Entrez le prénom du client"
+                      error={validationErrors.customerFirstName}
                     />
                     <FormField
                       label="Téléphone"
@@ -254,11 +411,21 @@ export default function CreditModal({ isOpen, onClose, onSuccess }) {
                       placeholder="Entrez le numéro de téléphone"
                     />
                     <FormField
-                      label="Adresse"
+                      label="Adresse (Village) *"
                       type="text"
                       value={clientInfo.customerAddress}
                       onChange={(e) => setClientInfo({ ...clientInfo, customerAddress: e.target.value })}
-                      placeholder="Entrez l'adresse du client"
+                      required
+                      placeholder="Entrez l'adresse/village du client"
+                      error={validationErrors.customerAddress}
+                    />
+                    <FormField
+                      label="Date de rendez-vous *"
+                      type="date"
+                      value={clientInfo.appointmentDate}
+                      onChange={(e) => setClientInfo({ ...clientInfo, appointmentDate: e.target.value })}
+                      required
+                      error={validationErrors.appointmentDate}
                     />
                   </div>
                 </div>
@@ -298,6 +465,7 @@ export default function CreditModal({ isOpen, onClose, onSuccess }) {
                           <div>
                             <h4 className="font-medium text-gray-900">{item.name}</h4>
                             <p className="text-sm text-gray-600">{item.price.toLocaleString('fr-FR')} KMF</p>
+                            <p className="text-xs text-gray-500">Stock: {item.quantity || 0}</p>
                           </div>
                           <div className={`w-5 h-5 rounded-full border-2 ${
                             selectedItems.find(selected => selected.id === item.id)
@@ -383,8 +551,9 @@ export default function CreditModal({ isOpen, onClose, onSuccess }) {
                         <div className="space-y-2 text-sm">
                           <p><span className="font-medium">Nom:</span> {clientInfo.customerName}</p>
                           <p><span className="font-medium">Prénom:</span> {clientInfo.customerFirstName}</p>
+                          <p><span className="font-medium">Adresse:</span> {clientInfo.customerAddress}</p>
+                          <p><span className="font-medium">Date RDV:</span> {new Date(clientInfo.appointmentDate).toLocaleDateString('fr-FR')}</p>
                           {clientInfo.customerPhone && <p><span className="font-medium">Téléphone:</span> {clientInfo.customerPhone}</p>}
-                          {clientInfo.customerAddress && <p><span className="font-medium">Adresse:</span> {clientInfo.customerAddress}</p>}
                         </div>
                       </div>
                     </div>
@@ -485,6 +654,147 @@ export default function CreditModal({ isOpen, onClose, onSuccess }) {
           </div>
         </div>
       </div>
+
+      {/* Modal d'alerte de stock */}
+      {showStockAlert && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div className="p-6">
+              <div className="flex items-center mb-4">
+                <div className="flex-shrink-0">
+                  {stockAlerts.some(alert => alert.type === 'error') ? (
+                    <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+                  ) : (
+                    <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+                  )}
+                </div>
+                <div className="ml-3">
+                  <h3 className="text-lg font-medium text-gray-900">
+                    {stockAlerts.some(alert => alert.type === 'error') ? 'Stock insuffisant' : 'Avertissement de stock'}
+                  </h3>
+                </div>
+              </div>
+              
+              <div className="mb-4">
+                <p className="text-sm text-gray-600 mb-4">
+                  {stockAlerts.some(alert => alert.type === 'error') 
+                    ? 'Impossible de créer le crédit car certains articles ne sont plus en stock :'
+                    : 'Attention : Le stock sera réduit pour les articles suivants :'
+                  }
+                </p>
+                
+                <div className="space-y-2">
+                  {stockAlerts.map((alert, index) => (
+                    <div key={index} className={`p-3 rounded-lg ${
+                      alert.type === 'error' 
+                        ? 'bg-red-50 border border-red-200' 
+                        : 'bg-yellow-50 border border-yellow-200'
+                    }`}>
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium text-gray-900">{alert.itemName}</span>
+                        <div className="text-sm">
+                          <span className="text-gray-600">Demandé: </span>
+                          <span className="font-semibold">{alert.requested}</span>
+                          <span className="text-gray-600 ml-2">Disponible: </span>
+                          <span className={`font-semibold ${
+                            alert.type === 'error' ? 'text-red-600' : 'text-yellow-600'
+                          }`}>
+                            {alert.available}
+                          </span>
+                        </div>
+                      </div>
+                      {alert.type === 'warning' && (
+                        <p className="text-xs text-yellow-700 mt-1">
+                          Le stock sera réduit à {alert.available - alert.requested} après cette vente
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="flex justify-end space-x-3">
+                <Button
+                  onClick={handleCancelStockAlert}
+                  variant="secondary"
+                  disabled={loading}
+                >
+                  Annuler
+                </Button>
+                {!stockAlerts.some(alert => alert.type === 'error') && (
+                  <Button
+                    onClick={handleConfirmStockAlert}
+                    variant="primary"
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <>
+                        <LoadingSpinner size="sm" className="mr-2" />
+                        Création...
+                      </>
+                    ) : (
+                      'Confirmer et créer'
+                    )}
+                  </Button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de confirmation de succès */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 bg-gray-400 bg-opacity-75 z-[60] flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div className="p-6">
+              <div className="flex items-center mb-4">
+                <div className="flex-shrink-0">
+                  <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <h3 className="text-lg font-medium text-gray-900">Crédit créé avec succès !</h3>
+                </div>
+              </div>
+              
+              <div className="mb-4">
+                <p className="text-sm text-gray-600 mb-4">
+                  Le crédit pour <strong>{clientInfo.customerName} {clientInfo.customerFirstName}</strong> a été créé avec succès.
+                </p>
+                <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                  <div className="flex items-center">
+                    <svg className="w-5 h-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3zm0 8c-2.761 0-5-2.239-5-5s2.239-5 5-5 5 2.239 5 5-2.239 5-5 5z" />
+                    </svg>
+                    <span className="text-sm text-green-800 font-medium">
+                      Montant total: {calculateTotal().toLocaleString('fr-FR')} KMF
+                    </span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex justify-end">
+                <Button
+                  onClick={handleSuccessModalClose}
+                  variant="primary"
+                  className="bg-green-600 hover:bg-green-700"
+                >
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  Fermer
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
