@@ -250,7 +250,7 @@ export default function Dashboard() {
 
               <button
                 onClick={() => window.location.href = '/inventaire'}
-                className="bg-gradient-to-r from-teal-500 to-teal-600 text-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+                className="bg-gradient-to-r from-green-500 to-green-600 text-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
               >
                 <div className="flex items-center space-x-2">
                   <div className="bg-white/20 p-2 rounded-lg">
@@ -260,14 +260,14 @@ export default function Dashboard() {
                   </div>
                   <div className="text-left">
                     <h3 className="font-semibold text-base">Inventaire</h3>
-                    <p className="text-teal-100 text-xs">Gérer les stocks du magasin</p>
+                    <p className="text-green-100 text-xs">Gérer les stocks du magasin</p>
                   </div>
                 </div>
               </button>
 
               <button
                 onClick={() => window.location.href = '/devis-factures'}
-                className="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+                className="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
               >
                 <div className="flex items-center space-x-3">
                   <div className="bg-white/20 p-3 rounded-lg">
@@ -277,14 +277,14 @@ export default function Dashboard() {
                   </div>
                   <div className="text-left">
                     <h3 className="font-semibold text-lg">Documents</h3>
-                    <p className="text-green-100 text-sm">Devis & Factures</p>
+                    <p className="text-purple-100 text-sm">Devis & Factures</p>
                   </div>
                 </div>
               </button>
 
               <button
                 onClick={() => window.location.href = '/rapports'}
-                className="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+                className="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
               >
                 <div className="flex items-center space-x-3">
                   <div className="bg-white/20 p-3 rounded-lg">
@@ -294,7 +294,7 @@ export default function Dashboard() {
                   </div>
                   <div className="text-left">
                     <h3 className="font-semibold text-lg">Rapports</h3>
-                    <p className="text-purple-100 text-sm">Analyses & Stats</p>
+                    <p className="text-orange-100 text-sm">Analyses & Stats</p>
                   </div>
                 </div>
               </button>
@@ -458,7 +458,7 @@ export default function Dashboard() {
 
             <button
               onClick={() => window.location.href = '/devis-factures'}
-              className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+              className="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
             >
               <div className="flex items-center space-x-2">
                 <div className="bg-white/20 p-2 rounded-lg">
@@ -468,14 +468,14 @@ export default function Dashboard() {
                 </div>
                 <div className="text-left">
                   <h3 className="font-semibold text-base">Nouveau Devis</h3>
-                  <p className="text-blue-100 text-xs">Créer un devis</p>
+                  <p className="text-orange-100 text-xs">Créer un devis</p>
                 </div>
               </div>
             </button>
 
             <button
               onClick={() => window.location.href = '/devis-factures'}
-              className="bg-gradient-to-r from-green-500 to-green-600 text-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+              className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group"
             >
               <div className="flex items-center space-x-2">
                 <div className="bg-white/20 p-2 rounded-lg">
@@ -485,7 +485,7 @@ export default function Dashboard() {
                 </div>
                 <div className="text-left">
                   <h3 className="font-semibold text-base">Nouvelle Facture</h3>
-                  <p className="text-green-100 text-xs">Émettre une facture</p>
+                  <p className="text-blue-100 text-xs">Émettre une facture</p>
                 </div>
               </div>
             </button>
@@ -508,6 +508,42 @@ export default function Dashboard() {
             </button>
           </div>
         </div>
+
+        {/* Alertes et Notifications */}
+        {!isAdmin && (stockLow > 0 || stockOut > 0) && (
+          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-8 border border-teal-100">
+            <h2 className="text-xl font-bold text-gray-900 mb-6">Alertes Stock</h2>
+            <div className="space-y-4">
+              {stockOut > 0 && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                    <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-red-800">Rupture de stock</h3>
+                    <p className="text-red-600 text-sm">{stockOut} article{stockOut > 1 ? 's' : ''} en rupture de stock</p>
+                  </div>
+                </div>
+              )}
+              
+              {stockLow > 0 && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
+                    <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-yellow-800">Stock faible</h3>
+                    <p className="text-yellow-600 text-sm">{stockLow} article{stockLow > 1 ? 's' : ''} avec stock faible</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Main Statistics */}
         <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-8 border border-teal-100">
@@ -578,41 +614,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Alertes et Notifications */}
-        {!isAdmin && (stockLow > 0 || stockOut > 0) && (
-          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-8 border border-teal-100">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">Alertes Stock</h2>
-            <div className="space-y-4">
-              {stockOut > 0 && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
-                    <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-red-800">Rupture de stock</h3>
-                    <p className="text-red-600 text-sm">{stockOut} article{stockOut > 1 ? 's' : ''} en rupture de stock</p>
-                  </div>
-                </div>
-              )}
-              
-              {stockLow > 0 && (
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
-                    <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-yellow-800">Stock faible</h3>
-                    <p className="text-yellow-600 text-sm">{stockLow} article{stockLow > 1 ? 's' : ''} avec stock faible</p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
 
         {/* Sales Dashboard Section */}
         {!isAdmin && salesStats && (

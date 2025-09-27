@@ -244,6 +244,7 @@ export default function AdminDashboard() {
   const renderDashboardContent = () => {
     const totalDepots = depots.length
     const totalUsers = users.length
+    const totalCategories = 0 // Pour l'instant, on n'a pas de collection categories dans AdminDashboard
 
     // Calculer les dukanis et dépôts
     const dukanis = shops.filter(shop => shop.type !== 'depot')
@@ -254,7 +255,7 @@ export default function AdminDashboard() {
         <h2 className="text-2xl font-bold text-gray-900 mb-6">Tableau de Bord - Statistiques du Système</h2>
 
         {/* Statistics Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8">
           <StatCard
             gradient="blue"
             title="Dépôts"
@@ -284,6 +285,17 @@ export default function AdminDashboard() {
             icon={
               <svg className="w-5 h-5 lg:w-6 lg:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+              </svg>
+            }
+          />
+
+          <StatCard
+            gradient="orange"
+            title="Catégories"
+            value={totalCategories}
+            icon={
+              <svg className="w-5 h-5 lg:w-6 lg:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
               </svg>
             }
           />

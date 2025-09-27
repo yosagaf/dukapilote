@@ -42,7 +42,7 @@ const OptimizedStatCard = memo(({
 
   return (
     <div 
-      className={`bg-gradient-to-r ${gradientClasses} text-white rounded-lg p-6 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 cursor-pointer`}
+      className={`bg-gradient-to-r ${gradientClasses} text-white rounded-lg p-6 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 cursor-pointer min-h-[120px] flex flex-col justify-center`}
       onClick={onClick}
     >
       <div className="flex items-center justify-between">

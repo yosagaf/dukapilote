@@ -28,6 +28,8 @@ export default function QuotesInvoicesIntegrated() {
     selectedItems: [],
     pricingMode: 'unit',
     totalAmount: 0,
+    customAmount: 0,
+    showCalculatedAmount: true,
     editableDate: new Date().toISOString().split('T')[0]
   })
   const [items, setItems] = useState([])
@@ -195,6 +197,8 @@ export default function QuotesInvoicesIntegrated() {
       selectedItems: [],
       pricingMode: 'unit',
       totalAmount: 0,
+      customAmount: 0,
+      showCalculatedAmount: true,
       editableDate: new Date().toISOString().split('T')[0]
     })
   }
@@ -208,6 +212,8 @@ export default function QuotesInvoicesIntegrated() {
       selectedItems: [],
       pricingMode: 'unit',
       totalAmount: 0,
+      customAmount: 0,
+      showCalculatedAmount: true,
       editableDate: new Date().toISOString().split('T')[0]
     })
   }
@@ -284,7 +290,8 @@ export default function QuotesInvoicesIntegrated() {
   const handleSubmit = async () => {
     setIsLoading(true)
     try {
-      const total = wizardData.selectedItems.reduce((sum, item) => sum + item.totalPrice, 0)
+      const calculatedTotal = wizardData.selectedItems.reduce((sum, item) => sum + item.totalPrice, 0)
+      const finalAmount = wizardData.customAmount > 0 ? wizardData.customAmount : calculatedTotal
       
       // Générer le numéro avec le nouveau système (incrémente le compteur)
       const documentNumber = await generateDocumentNumber(wizardType)
@@ -294,7 +301,10 @@ export default function QuotesInvoicesIntegrated() {
         number: documentNumber,
         clientInfo: wizardData.clientInfo,
         selectedItems: wizardData.selectedItems,
-        totalAmount: total,
+        totalAmount: finalAmount,
+        calculatedAmount: calculatedTotal,
+        customAmount: wizardData.customAmount,
+        showCalculatedAmount: wizardData.showCalculatedAmount,
         date: wizardData.editableDate,
         userId: userProfile.uid,
         shopId: userProfile.shopId,
@@ -339,12 +349,19 @@ export default function QuotesInvoicesIntegrated() {
           onRemoveItem={handleRemoveItem}
           pricingMode={wizardData.pricingMode}
           setPricingMode={(pricingMode) => setWizardData(prev => ({ ...prev, pricingMode }))}
+          customAmount={wizardData.customAmount}
+          setCustomAmount={(customAmount) => setWizardData(prev => ({ ...prev, customAmount }))}
+          showCalculatedAmount={wizardData.showCalculatedAmount}
+          setShowCalculatedAmount={(showCalculatedAmount) => setWizardData(prev => ({ ...prev, showCalculatedAmount }))}
         />
       case 4:
         return <PreviewStep 
           clientInfo={wizardData.clientInfo}
           selectedItems={wizardData.selectedItems}
-          totalAmount={wizardData.selectedItems.reduce((sum, item) => sum + item.totalPrice, 0)}
+          totalAmount={wizardData.customAmount > 0 ? wizardData.customAmount : wizardData.selectedItems.reduce((sum, item) => sum + item.totalPrice, 0)}
+          calculatedAmount={wizardData.selectedItems.reduce((sum, item) => sum + item.totalPrice, 0)}
+          customAmount={wizardData.customAmount}
+          showCalculatedAmount={wizardData.showCalculatedAmount}
           date={wizardData.editableDate}
           isQuote={wizardType === 'quote'}
           shopInfo={shopInfo}
@@ -996,7 +1013,7 @@ function ArticleSelectionStep({ items, selectedItems, onItemSelect, searchTerm, 
   )
 }
 
-function PricingStep({ selectedItems, onItemChange, onRemoveItem, pricingMode, setPricingMode }) {
+function PricingStep({ selectedItems, onItemChange, onRemoveItem, pricingMode, setPricingMode, customAmount, setCustomAmount, showCalculatedAmount, setShowCalculatedAmount }) {
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
@@ -1066,11 +1083,63 @@ function PricingStep({ selectedItems, onItemChange, onRemoveItem, pricingMode, s
             
             <div className="mt-6 p-4 bg-green-50 rounded-lg">
               <div className="flex items-center justify-between">
-                <span className="text-lg font-semibold text-gray-900">Total général:</span>
+                <span className="text-lg font-semibold text-gray-900">Total calculé:</span>
                 <span className="text-2xl font-bold text-green-600">
                   {selectedItems.reduce((sum, item) => sum + item.totalPrice, 0).toLocaleString('fr-FR')} KMF
                 </span>
               </div>
+            </div>
+
+            {/* Section Montant Personnalisé */}
+            <div className="mt-6 p-6 bg-blue-50 rounded-lg border border-blue-200">
+              <h5 className="text-lg font-semibold text-gray-900 mb-4">Montant Personnalisé</h5>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Montant personnalisé (KMF)
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={customAmount}
+                    onChange={(e) => setCustomAmount(parseFloat(e.target.value) || 0)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Saisissez le montant souhaité"
+                  />
+                </div>
+                
+                <div className="flex items-center space-x-3">
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={showCalculatedAmount}
+                      onChange={(e) => setShowCalculatedAmount(e.target.checked)}
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    />
+                    <span className="ml-2 text-sm text-gray-700">
+                      Afficher le montant calculé dans le PDF
+                    </span>
+                  </label>
+                </div>
+              </div>
+              
+              {customAmount > 0 && (
+                <div className="mt-4 p-3 bg-white rounded-lg border border-blue-300">
+                  <div className="flex items-center justify-between">
+                    <span className="text-lg font-semibold text-gray-900">Montant final:</span>
+                    <span className="text-2xl font-bold text-blue-600">
+                      {customAmount.toLocaleString('fr-FR')} KMF
+                    </span>
+                  </div>
+                  {showCalculatedAmount && (
+                    <div className="mt-2 text-sm text-gray-600">
+                      (Montant calculé: {selectedItems.reduce((sum, item) => sum + item.totalPrice, 0).toLocaleString('fr-FR')} KMF)
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -1079,7 +1148,7 @@ function PricingStep({ selectedItems, onItemChange, onRemoveItem, pricingMode, s
   )
 }
 
-function PreviewStep({ clientInfo, selectedItems, totalAmount, date, isQuote, shopInfo }) {
+function PreviewStep({ clientInfo, selectedItems, totalAmount, calculatedAmount, customAmount, showCalculatedAmount, date, isQuote, shopInfo }) {
   const [pdfUrl, setPdfUrl] = useState(null)
   const [isGenerating, setIsGenerating] = useState(false)
 
@@ -1095,6 +1164,9 @@ function PreviewStep({ clientInfo, selectedItems, totalAmount, date, isQuote, sh
         clientInfo,
         selectedItems: selectedItems,
         totalAmount,
+        calculatedAmount,
+        customAmount,
+        showCalculatedAmount,
         date
       }
       

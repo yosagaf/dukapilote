@@ -242,7 +242,9 @@ const styles = StyleSheet.create({
 
 // Composant PDF pour Devis
 export const QuotePDF = ({ documentData, shopInfo }) => {
-  const totalAmount = documentData.selectedItems.reduce((sum, item) => sum + item.totalPrice, 0)
+  const calculatedAmount = documentData.selectedItems.reduce((sum, item) => sum + item.totalPrice, 0)
+  const finalAmount = documentData.totalAmount || calculatedAmount
+  const showCalculatedAmount = documentData.showCalculatedAmount !== false
   
   return (
     <Document>
@@ -306,7 +308,12 @@ export const QuotePDF = ({ documentData, shopInfo }) => {
         {/* Total */}
         <View style={styles.totalSection}>
           <Text style={styles.totalLabel}>TOTAL (KMF)</Text>
-          <Text style={styles.totalAmount}>{totalAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')}</Text>
+          <Text style={styles.totalAmount}>{finalAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')}</Text>
+          {showCalculatedAmount && finalAmount !== calculatedAmount && (
+            <Text style={[styles.totalAmount, { fontSize: 12, color: '#666666', marginTop: 5 }]}>
+              (Calculé: {calculatedAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')} KMF)
+            </Text>
+          )}
         </View>
 
         {/* Ligne de séparation avant signatures */}
@@ -337,7 +344,9 @@ export const QuotePDF = ({ documentData, shopInfo }) => {
 
 // Composant PDF pour Facture
 export const InvoicePDF = ({ documentData, shopInfo }) => {
-  const totalAmount = documentData.selectedItems.reduce((sum, item) => sum + item.totalPrice, 0)
+  const calculatedAmount = documentData.selectedItems.reduce((sum, item) => sum + item.totalPrice, 0)
+  const finalAmount = documentData.totalAmount || calculatedAmount
+  const showCalculatedAmount = documentData.showCalculatedAmount !== false
   
   return (
     <Document>
@@ -401,7 +410,12 @@ export const InvoicePDF = ({ documentData, shopInfo }) => {
         {/* Total */}
         <View style={styles.totalSection}>
           <Text style={styles.totalLabel}>TOTAL À PAYER (KMF)</Text>
-          <Text style={styles.totalAmount}>{totalAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')}</Text>
+          <Text style={styles.totalAmount}>{finalAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')}</Text>
+          {showCalculatedAmount && finalAmount !== calculatedAmount && (
+            <Text style={[styles.totalAmount, { fontSize: 12, color: '#666666', marginTop: 5 }]}>
+              (Calculé: {calculatedAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')} KMF)
+            </Text>
+          )}
         </View>
 
         {/* Signatures - Position absolue en bas */}

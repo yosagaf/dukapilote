@@ -67,8 +67,8 @@ export default function StatCard({
   }
 
   return (
-    <div className={`bg-gradient-to-r ${gradients[gradient]} border p-4 lg:p-6 rounded-xl h-24 lg:h-auto ${className}`}>
-      <div className="flex items-center h-full">
+    <div className={`bg-gradient-to-r ${gradients[gradient]} border p-4 lg:p-6 rounded-xl min-h-[120px] flex flex-col justify-center ${className}`}>
+      <div className="flex items-center">
         <div className={`flex items-center justify-center w-10 h-10 lg:w-12 lg:h-12 ${iconColors[gradient]} rounded-xl mr-3 lg:mr-4 flex-shrink-0`}>
           {icon}
         </div>
