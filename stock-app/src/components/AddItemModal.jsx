@@ -252,7 +252,7 @@ export default function AddItemModal({ onClose, shopId, contextInfo }) {
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-200 transition-all duration-200 font-medium"
+                className="flex-1 bg-white/95 text-teal-600 border border-teal-100 shadow-sm py-3 px-4 rounded-lg hover:bg-teal-50 hover:border-teal-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-1 transition-all duration-200 font-medium"
               >
                 Annuler
               </button>

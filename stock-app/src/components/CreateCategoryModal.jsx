@@ -225,7 +225,7 @@ export default function CreateCategoryModal({ onClose }) {
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-lg hover:bg-gray-200 transition-all duration-200 font-medium"
+                className="flex-1 bg-white/95 text-purple-600 border border-purple-100 shadow-sm py-3 px-4 rounded-lg hover:bg-purple-50 hover:border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-1 transition-all duration-200 font-medium"
               >
                 Annuler
               </button>

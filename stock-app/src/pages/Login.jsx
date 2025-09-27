@@ -118,7 +118,60 @@ export default function Login() {
                   <button
                     type="button"
                     className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
-                    onClick={() => setShowPassword(!showPassword)}
+                    onPointerDown={(event) => {
+                      event.preventDefault()
+                      setShowPassword(true)
+                    }}
+                    onPointerUp={(event) => {
+                      event.preventDefault()
+                      setShowPassword(false)
+                    }}
+                    onPointerLeave={(event) => {
+                      event.preventDefault()
+                      setShowPassword(false)
+                    }}
+                    onPointerCancel={(event) => {
+                      event.preventDefault()
+                      setShowPassword(false)
+                    }}
+                    onMouseDown={(event) => {
+                      event.preventDefault()
+                      setShowPassword(true)
+                    }}
+                    onMouseUp={(event) => {
+                      event.preventDefault()
+                      setShowPassword(false)
+                    }}
+                    onMouseLeave={(event) => {
+                      event.preventDefault()
+                      setShowPassword(false)
+                    }}
+                    onTouchStart={(event) => {
+                      event.preventDefault()
+                      setShowPassword(true)
+                    }}
+                    onTouchEnd={(event) => {
+                      event.preventDefault()
+                      setShowPassword(false)
+                    }}
+                    onTouchCancel={(event) => {
+                      event.preventDefault()
+                      setShowPassword(false)
+                    }}
+                    onBlur={() => setShowPassword(false)}
+                    onKeyDown={(event) => {
+                      if (event.key === ' ' || event.key === 'Enter') {
+                        event.preventDefault()
+                        setShowPassword(true)
+                      }
+                    }}
+                    onKeyUp={(event) => {
+                      if (event.key === ' ' || event.key === 'Enter') {
+                        event.preventDefault()
+                        setShowPassword(false)
+                      }
+                    }}
+                    aria-pressed={showPassword}
                   >
                     {showPassword ? (
                       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

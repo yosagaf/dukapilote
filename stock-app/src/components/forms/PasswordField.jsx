@@ -13,6 +13,30 @@ const PasswordField = ({
 }) => {
   const [showPassword, setShowPassword] = useState(false)
 
+  const handlePressStart = (event) => {
+    event?.preventDefault()
+    setShowPassword(true)
+  }
+
+  const handlePressEnd = (event) => {
+    event?.preventDefault()
+    setShowPassword(false)
+  }
+
+  const handleKeyDown = (event) => {
+    if (event.key === ' ' || event.key === 'Enter') {
+      event.preventDefault()
+      setShowPassword(true)
+    }
+  }
+
+  const handleKeyUp = (event) => {
+    if (event.key === ' ' || event.key === 'Enter') {
+      event.preventDefault()
+      setShowPassword(false)
+    }
+  }
+
   return (
     <div className={className}>
       <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -32,7 +56,20 @@ const PasswordField = ({
         <button
           type="button"
           className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
-          onClick={() => setShowPassword(!showPassword)}
+          onPointerDown={handlePressStart}
+          onPointerUp={handlePressEnd}
+          onPointerLeave={handlePressEnd}
+          onPointerCancel={handlePressEnd}
+          onMouseDown={handlePressStart}
+          onMouseUp={handlePressEnd}
+          onMouseLeave={handlePressEnd}
+          onTouchStart={handlePressStart}
+          onTouchEnd={handlePressEnd}
+          onTouchCancel={handlePressEnd}
+          onBlur={handlePressEnd}
+          onKeyDown={handleKeyDown}
+          onKeyUp={handleKeyUp}
+          aria-pressed={showPassword}
         >
           {showPassword ? (
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
