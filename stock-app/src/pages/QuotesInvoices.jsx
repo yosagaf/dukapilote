@@ -1287,20 +1287,6 @@ function PricingStep({ selectedItems, onItemChange, onRemoveItem, pricingMode, s
                           />
                         </div>
                         
-                        <div className="flex items-center">
-                          <label className="flex items-center">
-                            <input
-                              type="checkbox"
-                              checked={showCalculatedAmount}
-                              onChange={(e) => setShowCalculatedAmount(e.target.checked)}
-                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                              onClick={(e) => e.stopPropagation()}
-                            />
-                            <span className="ml-2 text-xs text-gray-700">
-                              Afficher le montant calculé dans le PDF
-                            </span>
-                          </label>
-                        </div>
                       </div>
                     )}
                   </div>
@@ -1309,8 +1295,8 @@ function PricingStep({ selectedItems, onItemChange, onRemoveItem, pricingMode, s
 
               {/* Options d'Affichage PDF */}
               <div className="mb-4">
-                <h6 className="text-sm font-medium text-gray-700 mb-3">Options d'affichage dans le PDF</h6>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <h6 className="text-sm font-medium text-gray-700 mb-3">Affichage dans le PDF</h6>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <label className="flex items-center">
                     <input
                       type="checkbox"
@@ -1318,7 +1304,7 @@ function PricingStep({ selectedItems, onItemChange, onRemoveItem, pricingMode, s
                       onChange={(e) => setShowNetAmountInPDF(e.target.checked)}
                       className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                     />
-                    <span className="ml-2 text-xs text-gray-700">Total net</span>
+                    <span className="ml-2 text-xs text-gray-700">Afficher le total net (montant des articles)</span>
                   </label>
                   
                   <label className="flex items-center">
@@ -1328,7 +1314,7 @@ function PricingStep({ selectedItems, onItemChange, onRemoveItem, pricingMode, s
                       onChange={(e) => setShowFinalAmountInPDF(e.target.checked)}
                       className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
                     />
-                    <span className="ml-2 text-xs text-gray-700">Total à payer</span>
+                    <span className="ml-2 text-xs text-gray-700">Afficher le total à payer (montant final)</span>
                   </label>
                 </div>
               </div>
