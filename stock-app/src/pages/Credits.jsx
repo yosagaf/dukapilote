@@ -24,6 +24,7 @@ export default function Credits() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [showCreditModal, setShowCreditModal] = useState(false)
+  const [duplicateCreditData, setDuplicateCreditData] = useState(null)
   const [refreshTrigger, setRefreshTrigger] = useState(0)
   const [currentPage, setCurrentPage] = useState('credits')
 
@@ -65,6 +66,16 @@ export default function Credits() {
 
   const handlePaymentAdded = () => {
     setRefreshTrigger(prev => prev + 1)
+  }
+
+  const handleDuplicateCredit = (creditData) => {
+    setDuplicateCreditData(creditData)
+    setShowCreditModal(true)
+  }
+
+  const handleNewCredit = () => {
+    setDuplicateCreditData(null)
+    setShowCreditModal(true)
   }
 
   if (loading) {
@@ -119,7 +130,7 @@ export default function Credits() {
         </header>
 
             {/* Contenu principal */}
-            <div className="px-6 py-8">
+            <div className="px-6 py-8 pb-24">
               {error && (
                 <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
                   <p className="text-red-600">{error}</p>
@@ -213,7 +224,12 @@ export default function Credits() {
                   </p>
                 </div>
                 <div className="p-6">
-                  <CreditsList onRefresh={refreshTrigger} onPaymentAdded={handlePaymentAdded} />
+                  <CreditsList 
+                    onRefresh={refreshTrigger} 
+                    onPaymentAdded={handlePaymentAdded}
+                    onDuplicateCredit={handleDuplicateCredit}
+                    onNewCredit={handleNewCredit}
+                  />
                 </div>
               </div>
             </div>
@@ -221,8 +237,12 @@ export default function Credits() {
         {/* CreditModal - Toujours en plein écran */}
         <CreditModal
           isOpen={showCreditModal}
-          onClose={() => setShowCreditModal(false)}
+          onClose={() => {
+            setShowCreditModal(false)
+            setDuplicateCreditData(null)
+          }}
           onSuccess={handleCreditCreated}
+          duplicateData={duplicateCreditData}
         />
       </div>
     </div>
