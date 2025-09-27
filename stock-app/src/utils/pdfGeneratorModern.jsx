@@ -332,6 +332,19 @@ export const QuotePDF = ({ documentData, shopInfo }) => {
                 </View>
               </View>
             </View>
+          ) : finalAmount !== calculatedAmount ? (
+            <View>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
+                <Text style={[styles.totalLabel, { fontSize: 10 }]}>TOTAL NET</Text>
+                <Text style={[styles.totalAmount, { fontSize: 12 }]}>{calculatedAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')}</Text>
+              </View>
+              <View style={{ borderTopWidth: 1, borderTopColor: '#000000', paddingTop: 5, marginTop: 5 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                  <Text style={styles.totalLabel}>TOTAL À PAYER (KMF)</Text>
+                  <Text style={styles.totalAmount}>{finalAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')}</Text>
+                </View>
+              </View>
+            </View>
           ) : (
             <View>
               <Text style={styles.totalLabel}>TOTAL À PAYER (KMF)</Text>
@@ -450,6 +463,19 @@ export const InvoicePDF = ({ documentData, shopInfo }) => {
                 <Text style={[styles.totalAmount, { fontSize: 12, color: '#DC2626' }]}>
                   -{discountAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')}
                 </Text>
+              </View>
+              <View style={{ borderTopWidth: 1, borderTopColor: '#000000', paddingTop: 5, marginTop: 5 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                  <Text style={styles.totalLabel}>TOTAL À PAYER (KMF)</Text>
+                  <Text style={styles.totalAmount}>{finalAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')}</Text>
+                </View>
+              </View>
+            </View>
+          ) : finalAmount !== calculatedAmount ? (
+            <View>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
+                <Text style={[styles.totalLabel, { fontSize: 10 }]}>TOTAL NET</Text>
+                <Text style={[styles.totalAmount, { fontSize: 12 }]}>{calculatedAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')}</Text>
               </View>
               <View style={{ borderTopWidth: 1, borderTopColor: '#000000', paddingTop: 5, marginTop: 5 }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
