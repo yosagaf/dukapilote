@@ -1252,7 +1252,6 @@ function PricingStep({ selectedItems, onItemChange, onRemoveItem, pricingMode, s
                   </p>
                 </div>
               )}
-              </div>
               
               {customAmount > 0 && (
                 <div className="mt-4 p-3 bg-white rounded-lg border border-blue-300">
