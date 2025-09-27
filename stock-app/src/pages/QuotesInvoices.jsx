@@ -1071,6 +1071,13 @@ function ArticleSelectionStep({ items, selectedItems, onItemSelect, searchTerm, 
 }
 
 function PricingStep({ selectedItems, onItemChange, onRemoveItem, pricingMode, setPricingMode, customAmount, setCustomAmount, showCalculatedAmount, setShowCalculatedAmount, discountType, setDiscountType, discountValue, setDiscountValue, showDiscountInPDF, setShowDiscountInPDF, showNetAmountInPDF, setShowNetAmountInPDF, showFinalAmountInPDF, setShowFinalAmountInPDF, showDiscountDetailsInPDF, setShowDiscountDetailsInPDF }) {
+  // Calculer les valeurs nécessaires
+  const calculatedTotal = selectedItems.reduce((sum, item) => sum + item.totalPrice, 0)
+  const discountAmount = discountType === 'percentage' 
+    ? (calculatedTotal * discountValue) / 100 
+    : discountValue
+  const subtotalAfterDiscount = calculatedTotal - discountAmount
+
   return (
     <div className="space-y-6">
       <div className="text-center mb-8">
