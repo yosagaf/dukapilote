@@ -502,7 +502,7 @@ export default function Dashboard() {
                 </div>
                 <div className="text-left">
                   <h3 className="font-semibold text-base">Gérer Stock</h3>
-                  <p className="text-purple-100 text-xs">Voir l'inventaire</p>
+                  <p className="text-purple-100 text-xs">Voir l'inventaire du magasin</p>
                 </div>
               </div>
             </button>

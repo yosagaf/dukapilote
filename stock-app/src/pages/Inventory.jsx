@@ -160,7 +160,21 @@ export default function Inventory() {
 
   const handleSort = (field) => {
     if (field === 'status') {
-      setGroupByStatus(!groupByStatus)
+      // Cycle through different status sorting orders
+      if (sortField !== 'status') {
+        // First click: sort by status (rupture → low → good)
+        setSortField('status')
+        setSortDirection('asc')
+        setGroupByStatus(true)
+      } else if (sortDirection === 'asc') {
+        // Second click: reverse order (good → low → rupture)
+        setSortDirection('desc')
+        setGroupByStatus(true)
+      } else {
+        // Third click: no grouping, alphabetical by status
+        setSortDirection('asc')
+        setGroupByStatus(false)
+      }
       return
     }
 
@@ -195,17 +209,29 @@ export default function Inventory() {
       return status === filterStatus
     })
     .sort((a, b) => {
-      // Si groupé par statut, trier d'abord par statut
-      if (groupByStatus) {
+      // Si tri par statut, gérer les différents ordres
+      if (sortField === 'status') {
         const statusA = getStockStatus(a.quantity, a.minThreshold)
         const statusB = getStockStatus(b.quantity, b.minThreshold)
 
-        // Ordre de priorité : out (rupture) > low (faible) > good (bon)
-        const statusOrder = { out: 0, low: 1, good: 2 }
-        const statusComparison = statusOrder[statusA] - statusOrder[statusB]
-
-        if (statusComparison !== 0) {
-          return statusComparison
+        if (groupByStatus) {
+          // Ordre groupé : rupture → faible → bon (ou l'inverse)
+          const statusOrder = { out: 0, low: 1, good: 2 }
+          const statusComparison = statusOrder[statusA] - statusOrder[statusB]
+          
+          if (statusComparison !== 0) {
+            return sortDirection === 'asc' ? statusComparison : -statusComparison
+          }
+        } else {
+          // Ordre alphabétique par nom de statut
+          const statusTextA = getStockStatusText(statusA)
+          const statusTextB = getStockStatusText(statusB)
+          
+          if (sortDirection === 'asc') {
+            return statusTextA.localeCompare(statusTextB)
+          } else {
+            return statusTextB.localeCompare(statusTextA)
+          }
         }
       }
 
@@ -238,15 +264,31 @@ export default function Inventory() {
 
   const SortIcon = ({ field }) => {
     if (field === 'status') {
-      return groupByStatus ? (
-        <svg className="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-        </svg>
-      ) : (
-        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-        </svg>
-      )
+      if (sortField === 'status') {
+        if (groupByStatus) {
+          return sortDirection === 'asc' ? (
+            <svg className="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+            </svg>
+          ) : (
+            <svg className="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+            </svg>
+          )
+        } else {
+          return (
+            <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+            </svg>
+          )
+        }
+      } else {
+        return (
+          <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+          </svg>
+        )
+      }
     }
 
     if (sortField !== field) {
@@ -345,19 +387,80 @@ export default function Inventory() {
                     </div>
                   </div>
 
-                  {/* Filter */}
-                  <div className="flex items-center space-x-2">
-                    <label className="text-sm font-medium text-gray-700">Filtrer:</label>
-                    <select
-                      value={filterStatus}
-                      onChange={(e) => setFilterStatus(e.target.value)}
-                      className="border border-gray-300 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                    >
-                      <option value="all">Tous</option>
-                      <option value="good">En stock</option>
-                      <option value="low">Stock faible</option>
-                      <option value="out">Rupture</option>
-                    </select>
+                  {/* Filter and Quick Sort */}
+                  <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-2">
+                      <label className="text-sm font-medium text-gray-700">Filtrer:</label>
+                      <select
+                        value={filterStatus}
+                        onChange={(e) => setFilterStatus(e.target.value)}
+                        className="border border-gray-300 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                      >
+                        <option value="all">Tous</option>
+                        <option value="good">En stock</option>
+                        <option value="low">Stock faible</option>
+                        <option value="out">Rupture</option>
+                      </select>
+                    </div>
+                    
+                    {/* Quick Sort by Stock Status */}
+                    <div className="flex items-center space-x-2">
+                      <label className="text-sm font-medium text-gray-700">Tri rapide:</label>
+                      <div className="flex space-x-1">
+                        <button
+                          onClick={() => {
+                            setFilterStatus('out')
+                            setGroupByStatus(true)
+                          }}
+                          className={`px-3 py-1 text-xs rounded-full transition-colors ${
+                            filterStatus === 'out' && groupByStatus 
+                              ? 'bg-red-100 text-red-700 border border-red-200' 
+                              : 'bg-gray-100 text-gray-600 hover:bg-red-50 hover:text-red-600'
+                          }`}
+                        >
+                          🔴 Rupture
+                        </button>
+                        <button
+                          onClick={() => {
+                            setFilterStatus('low')
+                            setGroupByStatus(true)
+                          }}
+                          className={`px-3 py-1 text-xs rounded-full transition-colors ${
+                            filterStatus === 'low' && groupByStatus 
+                              ? 'bg-orange-100 text-orange-700 border border-orange-200' 
+                              : 'bg-gray-100 text-gray-600 hover:bg-orange-50 hover:text-orange-600'
+                          }`}
+                        >
+                          🟠 Stock faible
+                        </button>
+                        <button
+                          onClick={() => {
+                            setFilterStatus('good')
+                            setGroupByStatus(false)
+                          }}
+                          className={`px-3 py-1 text-xs rounded-full transition-colors ${
+                            filterStatus === 'good' && !groupByStatus 
+                              ? 'bg-green-100 text-green-700 border border-green-200' 
+                              : 'bg-gray-100 text-gray-600 hover:bg-green-50 hover:text-green-600'
+                          }`}
+                        >
+                          🟢 En stock
+                        </button>
+                        <button
+                          onClick={() => {
+                            setFilterStatus('all')
+                            setGroupByStatus(true)
+                          }}
+                          className={`px-3 py-1 text-xs rounded-full transition-colors ${
+                            filterStatus === 'all' && groupByStatus 
+                              ? 'bg-blue-100 text-blue-700 border border-blue-200' 
+                              : 'bg-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-600'
+                          }`}
+                        >
+                          📊 Tous (groupés)
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -410,6 +513,15 @@ export default function Inventory() {
                         <div className="flex items-center space-x-1">
                           <span>Statut</span>
                           <SortIcon field="status" />
+                          {sortField === 'status' && (
+                            <span className="text-xs">
+                              {groupByStatus ? (
+                                sortDirection === 'asc' ? '(rupture→faible→bon)' : '(bon→faible→rupture)'
+                              ) : (
+                                '(alphabétique)'
+                              )}
+                            </span>
+                          )}
                         </div>
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">

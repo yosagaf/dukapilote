@@ -139,6 +139,16 @@ export default function MyDepots() {
       return status === filterStatus
     })
     .sort((a, b) => {
+      // Tri par statut simple (rupture → faible → bon)
+      if (sortField === 'status') {
+        const statusOrder = { out: 0, low: 1, good: 2 }
+        const statusA = getStockStatus(a.quantity, a.minThreshold)
+        const statusB = getStockStatus(b.quantity, b.minThreshold)
+        const comparison = statusOrder[statusA] - statusOrder[statusB]
+        return sortDirection === 'asc' ? comparison : -comparison
+      }
+
+      // Tri générique
       let aVal = a[sortField]
       let bVal = b[sortField]
 
@@ -410,8 +420,19 @@ export default function MyDepots() {
                                 <SortIcon field="price" />
                               </div>
                             </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Statut
+                            <th
+                              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
+                              onClick={() => handleSort('status')}
+                            >
+                              <div className="flex items-center space-x-1">
+                                <span>Statut</span>
+                                <SortIcon field="status" />
+                                {sortField === 'status' && (
+                                  <span className="text-xs">
+                                {sortDirection === 'asc' ? '(rupture→faible→bon)' : '(bon→faible→rupture)'}
+                                  </span>
+                                )}
+                              </div>
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                               Actions
@@ -471,13 +492,13 @@ export default function MyDepots() {
                                     <div className="flex space-x-2">
                                       <button
                                         onClick={() => handleWithdrawItem(item)}
-                                        className="text-orange-600 hover:text-orange-900 transition-colors font-medium"
+                                        className="inline-flex items-center justify-center px-3 py-2 rounded-lg border border-orange-300 bg-orange-50 text-orange-600 hover:bg-orange-100 hover:border-orange-400 transition-all duration-200 font-medium shadow-sm"
                                       >
                                         Retirer
                                       </button>
                                       <button
                                         onClick={() => handleEditItem(item)}
-                                        className="text-teal-600 hover:text-teal-900 transition-colors"
+                                        className="inline-flex items-center justify-center px-3 py-2 rounded-lg border border-blue-300 bg-blue-50 text-blue-600 hover:bg-blue-100 hover:border-blue-400 transition-all duration-200 font-medium shadow-sm"
                                       >
                                         Modifier
                                       </button>
