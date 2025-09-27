@@ -250,6 +250,7 @@ export const QuotePDF = ({ documentData, shopInfo }) => {
   const showDiscountInPDF = documentData.showDiscountInPDF !== false
   const showNetAmountInPDF = documentData.showNetAmountInPDF !== false
   const showFinalAmountInPDF = documentData.showFinalAmountInPDF !== false
+  const showDiscountDetailsInPDF = documentData.showDiscountDetailsInPDF !== false
   const hasDiscount = discountAmount > 0 && showDiscountInPDF
   
   return (
@@ -315,7 +316,7 @@ export const QuotePDF = ({ documentData, shopInfo }) => {
         <View style={styles.totalSection}>
           {hasDiscount ? (
             <View>
-              {showNetAmountInPDF && (
+              {showDiscountDetailsInPDF && showNetAmountInPDF && (
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
                   <Text style={[styles.totalLabel, { fontSize: 10 }]}>TOTAL NET</Text>
                   <Text style={[styles.totalAmount, { fontSize: 12 }]}>{calculatedAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')}</Text>
@@ -329,7 +330,7 @@ export const QuotePDF = ({ documentData, shopInfo }) => {
                   -{discountAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')}
                 </Text>
               </View>
-              {showFinalAmountInPDF && (
+              {showDiscountDetailsInPDF && showFinalAmountInPDF && (
                 <View style={{ borderTopWidth: 1, borderTopColor: '#000000', paddingTop: 5, marginTop: 5 }}>
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={styles.totalLabel}>TOTAL À PAYER (KMF)</Text>
@@ -399,6 +400,7 @@ export const InvoicePDF = ({ documentData, shopInfo }) => {
   const showDiscountInPDF = documentData.showDiscountInPDF !== false
   const showNetAmountInPDF = documentData.showNetAmountInPDF !== false
   const showFinalAmountInPDF = documentData.showFinalAmountInPDF !== false
+  const showDiscountDetailsInPDF = documentData.showDiscountDetailsInPDF !== false
   const hasDiscount = discountAmount > 0 && showDiscountInPDF
   
   return (
@@ -464,7 +466,7 @@ export const InvoicePDF = ({ documentData, shopInfo }) => {
         <View style={styles.totalSection}>
           {hasDiscount ? (
             <View>
-              {showNetAmountInPDF && (
+              {showDiscountDetailsInPDF && showNetAmountInPDF && (
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 }}>
                   <Text style={[styles.totalLabel, { fontSize: 10 }]}>TOTAL NET</Text>
                   <Text style={[styles.totalAmount, { fontSize: 12 }]}>{calculatedAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')}</Text>
@@ -478,7 +480,7 @@ export const InvoicePDF = ({ documentData, shopInfo }) => {
                   -{discountAmount.toLocaleString('fr-FR').replace(/\//g, '').replace(/\s/g, '')}
                 </Text>
               </View>
-              {showFinalAmountInPDF && (
+              {showDiscountDetailsInPDF && showFinalAmountInPDF && (
                 <View style={{ borderTopWidth: 1, borderTopColor: '#000000', paddingTop: 5, marginTop: 5 }}>
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={styles.totalLabel}>TOTAL À PAYER (KMF)</Text>
